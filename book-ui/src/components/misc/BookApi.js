@@ -9,6 +9,7 @@ export const bookApi = {
   getUsers,
   deleteUser,
   getBooks,
+  getBook,
   deleteBook,
   addBook
 }
@@ -48,6 +49,13 @@ function deleteUser(user, username) {
 
 function getBooks(user, text) {
   const url = text ? `/api/books?text=${text}` : '/api/books'
+  return instance.get(url, {
+    headers: { 'Authorization': basicAuth(user) }
+  })
+}
+
+function getBook(user, isbn, text) {
+  const url = text ? `/api/books?text=${text}` : `/api/books/${isbn}`
   return instance.get(url, {
     headers: { 'Authorization': basicAuth(user) }
   })
