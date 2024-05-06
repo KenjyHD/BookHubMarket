@@ -57,4 +57,11 @@ public class BookController {
         bookService.deleteBook(book);
         return bookMapper.toBookDto(book);
     }
+
+    @Operation(security = {@SecurityRequirement(name = BASIC_AUTH_SECURITY_SCHEME)})
+    @GetMapping("/{isbn}")
+    public BookDto getBook(@PathVariable String isbn) {
+        Book book = bookService.validateAndGetBook(isbn);
+        return bookMapper.toBookDto(book);
+    }
 }
