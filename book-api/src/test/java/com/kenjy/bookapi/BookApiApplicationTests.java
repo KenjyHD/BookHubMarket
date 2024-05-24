@@ -1,4 +1,4 @@
-package com.ivanfranchin.bookapi;
+package com.kenjy.bookapi;
 
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
