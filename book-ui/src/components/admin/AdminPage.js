@@ -16,7 +16,7 @@ function AdminPage() {
   const [isUsersLoading, setIsUsersLoading] = useState(false)
 
   const [books, setBooks] = useState([])
-  const [bookIsbn, setBookIsbn] = useState('')
+  const [bookId, setBookId] = useState('')
   const [bookTitle, setBookTitle] = useState('')
   const [bookTextSearch, setBookTextSearch] = useState('')
   const [isBooksLoading, setIsBooksLoading] = useState(false)
@@ -29,8 +29,8 @@ function AdminPage() {
   const handleInputChange = (e, { name, value }) => {
     if (name === 'userUsernameSearch') {
       setUserUsernameSearch(value)
-    } else if (name === 'bookIsbn') {
-      setBookIsbn(value)
+    } else if (name === 'bookId') {
+      setBookId(value)
     } else if (name === 'bookTitle') {
       setBookTitle(value)
     } else if (name === 'bookTextSearch') {
@@ -84,23 +84,9 @@ function AdminPage() {
     }
   }
 
-  const handleDeleteBook = async (isbn) => {
+  const handleDeleteBook = async (id) => {
     try {
-      await bookApi.deleteBook(user, isbn)
-      await handleGetBooks()
-    } catch (error) {
-      handleLogError(error)
-    }
-  }
-
-  const handleAddBook = async () => {
-    try {
-      const book = { isbn: bookIsbn.trim(), title: bookTitle.trim() }
-      if (!(book.isbn && book.title)) {
-        return
-      }
-      await bookApi.addBook(user, book)
-      clearBookForm()
+      await bookApi.deleteBook(user, id)
       await handleGetBooks()
     } catch (error) {
       handleLogError(error)
@@ -118,11 +104,6 @@ function AdminPage() {
     }
   }
 
-  const clearBookForm = () => {
-    setBookIsbn('')
-    setBookTitle('')
-  }
-
   if (!isAdmin) {
     return <Navigate to='/' />
   }
@@ -137,10 +118,9 @@ function AdminPage() {
         handleSearchUser={handleSearchUser}
         isBooksLoading={isBooksLoading}
         books={books}
-        bookIsbn={bookIsbn}
+        bookId={bookId}
         bookTitle={bookTitle}
         bookTextSearch={bookTextSearch}
-        handleAddBook={handleAddBook}
         handleDeleteBook={handleDeleteBook}
         handleSearchBook={handleSearchBook}
         handleInputChange={handleInputChange}
