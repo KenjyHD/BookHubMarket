@@ -19,10 +19,11 @@ function BookDetails() {
             try {
                 const response = await bookApi.getBook(user, id)
                 if (!response) {
-                    throw new Error('Failed to fetch book details');
+                    setError('Failed to fetch book details');
+                    return;
                 }
-                setBook(response.data);
 
+                setBook(response.data);
                 const purchaseRequestResponse = await bookApi.checkPurchaseRequest(user, id);
                 setPurchaseRequestExists(purchaseRequestResponse.data.exists);
             } catch (error) {
