@@ -1,12 +1,12 @@
-package com.ivanfranchin.bookapi.rest;
+package com.kenjy.bookapi.rest;
 
-import com.ivanfranchin.bookapi.exception.DuplicatedUserInfoException;
-import com.ivanfranchin.bookapi.model.User;
-import com.ivanfranchin.bookapi.rest.dto.AuthResponse;
-import com.ivanfranchin.bookapi.rest.dto.LoginRequest;
-import com.ivanfranchin.bookapi.rest.dto.SignUpRequest;
-import com.ivanfranchin.bookapi.security.WebSecurityConfig;
-import com.ivanfranchin.bookapi.service.UserService;
+import com.kenjy.bookapi.exception.DuplicatedUserInfoException;
+import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.dto.AuthResponse;
+import com.kenjy.bookapi.dto.LoginRequest;
+import com.kenjy.bookapi.dto.SignUpRequest;
+import com.kenjy.bookapi.security.WebSecurityConfig;
+import com.kenjy.bookapi.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
