@@ -6,7 +6,7 @@ import BookTable from './BookTable'
 function AdminTab(props) {
   const { handleInputChange } = props
   const { isUsersLoading, users, userUsernameSearch, handleDeleteUser, handleSearchUser } = props
-  const { isBooksLoading, books, bookIsbn, bookTitle, bookTextSearch, handleAddBook, handleDeleteBook, handleSearchBook } = props
+  const { isBooksLoading, books, bookId, bookTitle, bookTextSearch, handleAddBook, handleDeleteBook, handleSearchBook } = props
 
   const panes = [
     {
@@ -29,7 +29,7 @@ function AdminTab(props) {
         <Tab.Pane loading={isBooksLoading}>
           <BookTable
             books={books}
-            bookIsbn={bookIsbn}
+            bookId={bookId}
             bookTitle={bookTitle}
             bookTextSearch={bookTextSearch}
             handleInputChange={handleInputChange}
