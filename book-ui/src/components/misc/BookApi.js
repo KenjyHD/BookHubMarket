@@ -11,7 +11,9 @@ export const bookApi = {
   getBooks,
   getBook,
   deleteBook,
-  addBook
+  addBook,
+  createPurchaseRequest,
+  checkPurchaseRequest
 }
 
 function authenticate(username, password) {
@@ -54,15 +56,15 @@ function getBooks(user, text) {
   })
 }
 
-function getBook(user, isbn, text) {
-  const url = text ? `/api/books?text=${text}` : `/api/books/${isbn}`
+function getBook(user, id, text) {
+  const url = text ? `/api/books?text=${text}` : `/api/books/${id}`
   return instance.get(url, {
     headers: { 'Authorization': basicAuth(user) }
   })
 }
 
-function deleteBook(user, isbn) {
-  return instance.delete(`/api/books/${isbn}`, {
+function deleteBook(user, id) {
+  return instance.delete(`/api/books/${id}`, {
     headers: { 'Authorization': basicAuth(user) }
   })
 }
@@ -70,10 +72,28 @@ function deleteBook(user, isbn) {
 function addBook(user, book) {
   return instance.post('/api/books', book, {
     headers: {
-      'Content-type': 'application/json',
+      'Content-Type': 'multipart/form-data',
       'Authorization': basicAuth(user)
     }
   })
+}
+
+function createPurchaseRequest(user, bookId) {
+  return instance.post('/api/purchase', {
+    userId: user.id,
+    bookId: bookId
+  }, {
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': basicAuth(user)
+    }
+  })
+}
+
+function checkPurchaseRequest(user, bookId) {
+  return instance.get(`/api/purchase/check?userId=${user.id}&bookId=${bookId}`, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
 }
 
 // -- Axios
