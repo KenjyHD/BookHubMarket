@@ -7,8 +7,9 @@ import Home from './components/home/Home'
 import Login from './components/home/Login'
 import Signup from './components/home/Signup'
 import AdminPage from './components/admin/AdminPage'
-import UserPage from './components/user/UserPage'
+import Library from './components/user/Library'
 import BookDetails from './components/user/BookDetails'
+import AddBookForm from "./components/admin/AddBookForm";
 
 function App() {
   return (
@@ -20,8 +21,9 @@ function App() {
           <Route path='/login' element={<Login />} />
           <Route path='/signup' element={<Signup />} />
           <Route path="/adminpage" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
-          <Route path="/userpage" element={<PrivateRoute><UserPage /></PrivateRoute>} />
-          <Route path="/book/:isbn" element={<PrivateRoute><BookDetails /></PrivateRoute>} />
+          <Route path="/library" element={<PrivateRoute><Library /></PrivateRoute>} />
+          <Route path="/book/:id" element={<PrivateRoute><BookDetails /></PrivateRoute>} />
+          <Route path="/add-book-form" element={<PrivateRoute><AddBookForm /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
