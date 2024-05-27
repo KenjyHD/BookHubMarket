@@ -87,7 +87,13 @@ function createPurchaseRequest(user, bookId) {
       'Content-Type': 'application/json',
       'Authorization': basicAuth(user)
     }
-  })
+  }).then(response => response)
+      .catch(error => {
+        if (error.response) {
+          return error.response;
+        }
+        throw error;
+      });
 }
 
 function checkPurchaseRequest(user, bookId) {
