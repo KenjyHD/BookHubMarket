@@ -1,8 +1,8 @@
-package com.ivanfranchin.bookapi.service;
+package com.kenjy.bookapi.service;
 
-import com.ivanfranchin.bookapi.model.Book;
-import com.ivanfranchin.bookapi.exception.BookNotFoundException;
-import com.ivanfranchin.bookapi.repository.BookRepository;
+import com.kenjy.bookapi.entities.Book;
+import com.kenjy.bookapi.exception.BookNotFoundException;
+import com.kenjy.bookapi.repository.BookRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,13 +21,13 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<Book> getBooksContainingText(String text) {
-        return bookRepository.findByIsbnContainingOrTitleContainingIgnoreCaseOrderByTitle(text, text);
+        return bookRepository.findByTitleContainingIgnoreCaseOrderByTitle(text);
     }
 
     @Override
-    public Book validateAndGetBook(String isbn) {
-        return bookRepository.findById(isbn)
-                .orElseThrow(() -> new BookNotFoundException(String.format("Book with isbn %s not found", isbn)));
+    public Book validateAndGetBook(Long id) {
+        return bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(String.format("Book with id %s not found", id)));
     }
 
     @Override

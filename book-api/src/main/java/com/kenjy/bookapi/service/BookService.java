@@ -1,6 +1,6 @@
-package com.ivanfranchin.bookapi.service;
+package com.kenjy.bookapi.service;
 
-import com.ivanfranchin.bookapi.model.Book;
+import com.kenjy.bookapi.entities.Book;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface BookService {
 
     List<Book> getBooksContainingText(String text);
 
-    Book validateAndGetBook(String isbn);
+    Book validateAndGetBook(Long id);
 
     Book saveBook(Book book);
 
