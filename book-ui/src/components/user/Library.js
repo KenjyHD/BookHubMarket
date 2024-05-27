@@ -6,7 +6,7 @@ import { useAuth } from '../context/AuthContext'
 import { bookApi } from '../misc/BookApi'
 import { handleLogError } from '../misc/Helpers'
 
-function UserPage() {
+function Library() {
   const Auth = useAuth()
   const user = Auth.getUser()
   const isUser = user.role === 'USER'
@@ -65,4 +65,4 @@ function UserPage() {
   )
 }
 
-export default UserPage
+export default Library
