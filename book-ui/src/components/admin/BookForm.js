@@ -1,28 +1,14 @@
 import React from 'react'
-import { Button, Form, Icon } from 'semantic-ui-react'
+import { Button, Container } from 'semantic-ui-react'
+import { Link } from 'react-router-dom';
 
-function BookForm({ bookIsbn, bookTitle, handleInputChange, handleAddBook }) {
-  const createBtnDisabled = bookIsbn.trim() === '' || bookTitle.trim() === ''
-  return (
-    <Form onSubmit={handleAddBook}>
-      <Form.Group>
-        <Form.Input
-          name='bookIsbn'
-          placeholder='ISBN *'
-          value={bookIsbn}
-          onChange={handleInputChange}
-        />
-        <Form.Input
-          name='bookTitle'
-          placeholder='Title *'
-          value={bookTitle}
-          onChange={handleInputChange}
-        />
-        <Button icon labelPosition='right' disabled={createBtnDisabled}>
-          Create<Icon name='add' />
+function BookForm() {
+    return (
+      <Container>
+        <Button as={Link} to="/add-book-form" primary>
+          Add Book
         </Button>
-      </Form.Group>
-    </Form>
+      </Container>
   )
 }
 
