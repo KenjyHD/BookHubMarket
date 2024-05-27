@@ -2,7 +2,7 @@ import React from 'react'
 import { Button, Form, Grid, Image, Input, Table } from 'semantic-ui-react'
 import BookForm from './BookForm'
 
-function BookTable({ books, bookIsbn, bookTitle, bookTextSearch, handleInputChange, handleAddBook, handleDeleteBook, handleSearchBook }) {
+function BookTable({ books, bookTextSearch, handleInputChange, handleDeleteBook, handleSearchBook }) {
   let bookList
   if (books.length === 0) {
     bookList = (
@@ -13,20 +13,20 @@ function BookTable({ books, bookIsbn, bookTitle, bookTextSearch, handleInputChan
   } else {
     bookList = books.map(book => {
       return (
-        <Table.Row key={book.isbn}>
+        <Table.Row key={book.id}>
           <Table.Cell collapsing>
             <Button
               circular
               color='red'
               size='small'
               icon='trash'
-              onClick={() => handleDeleteBook(book.isbn)}
+              onClick={() => handleDeleteBook(book.id)}
             />
           </Table.Cell>
           <Table.Cell>
-            <Image src={`http://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`} size='tiny' bordered rounded />
+            <Image src={`http://covers.openlibrary.org/b/id/${book.id}-M.jpg`} size='tiny' bordered rounded />
           </Table.Cell>
-          <Table.Cell>{book.isbn}</Table.Cell>
+          <Table.Cell>{book.id}</Table.Cell>
           <Table.Cell>{book.title}</Table.Cell>
         </Table.Row>
       )
@@ -42,19 +42,14 @@ function BookTable({ books, bookIsbn, bookTitle, bookTextSearch, handleInputChan
               <Input
                 action={{ icon: 'search' }}
                 name='bookTextSearch'
-                placeholder='Search by ISBN or Title'
+                placeholder='Search by ID or Title'
                 value={bookTextSearch}
                 onChange={handleInputChange}
               />
             </Form>
           </Grid.Column>
           <Grid.Column>
-            <BookForm
-              bookIsbn={bookIsbn}
-              bookTitle={bookTitle}
-              handleInputChange={handleInputChange}
-              handleAddBook={handleAddBook}
-            />
+            <BookForm/>
           </Grid.Column>
         </Grid.Row>
       </Grid>
@@ -63,7 +58,7 @@ function BookTable({ books, bookIsbn, bookTitle, bookTextSearch, handleInputChan
           <Table.Row>
             <Table.HeaderCell width={1}/>
             <Table.HeaderCell width={3}>Cover</Table.HeaderCell>
-            <Table.HeaderCell width={4}>ISBN</Table.HeaderCell>
+            <Table.HeaderCell width={4}>ID</Table.HeaderCell>
             <Table.HeaderCell width={8}>Title</Table.HeaderCell>
           </Table.Row>
         </Table.Header>
