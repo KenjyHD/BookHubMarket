@@ -8,11 +8,11 @@ function BookList({ isBooksLoading, bookTextSearch, books, handleInputChange, ha
     bookList = <Item key='no-book'>No book</Item>
   } else {
     bookList = books.map(book => (
-        <Item key={book.isbn}>
-            <Image src={`http://covers.openlibrary.org/b/isbn/${book.isbn}-M.jpg`} size='tiny' bordered rounded />
+        <Item key={book.id}>
+            <Image src={`http://covers.openlibrary.org/b/id/${book.id}-M.jpg`} size='tiny' bordered rounded />
             <Item.Content>
-              <Item.Header as={Link} to={`/book/${book.isbn}`}>{book.title}</Item.Header>
-              <Item.Meta>{book.isbn}</Item.Meta>
+              <Item.Header as={Link} to={`/book/${book.id}`}>{book.title}</Item.Header>
+              <Item.Meta>{book.id}</Item.Meta>
               <Item.Description>
                   <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
               </Item.Description>
@@ -36,7 +36,7 @@ function BookList({ isBooksLoading, bookTextSearch, books, handleInputChange, ha
                 <Input
                     action={{ icon: 'search' }}
                     name='bookTextSearch'
-                    placeholder='Search by ISBN or Title'
+                    placeholder='Search by ID or Title'
                     value={bookTextSearch}
                     onChange={handleInputChange}
                 />
