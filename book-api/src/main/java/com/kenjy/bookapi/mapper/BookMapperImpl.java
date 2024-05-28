@@ -1,6 +1,6 @@
 package com.kenjy.bookapi.mapper;
 
-import com.kenjy.bookapi.entities.Book;
+import com.kenjy.bookapi.entities.Books;
 import com.kenjy.bookapi.dto.GetBookDTO;
 import com.kenjy.bookapi.dto.AddBookDTO;
 import org.springframework.stereotype.Service;
@@ -8,15 +8,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class BookMapperImpl implements BookMapper {
-    private final String uploadDir = System.getProperty("user.dir") + "\\src\\main\\resources\\file-storage\\";
+    private final String uploadDir = System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\";
 
     @Override
-    public Book toBook(AddBookDTO dto, MultipartFile pfdFile) {
+    public Books toBook(AddBookDTO dto, MultipartFile pfdFile) {
         if (dto == null) {
             return null;
         }
 
-        Book book = new Book();
+        Books book = new Books();
         book.setTitle(dto.getTitle());
         book.setAuthor(dto.getAuthor());
         book.setPrice(dto.getPrice());
@@ -28,7 +28,7 @@ public class BookMapperImpl implements BookMapper {
     }
 
     @Override
-    public GetBookDTO toBookDTO(Book book) {
+    public GetBookDTO toBookDTO(Books book) {
         if (book == null) {
             return null;
         }
