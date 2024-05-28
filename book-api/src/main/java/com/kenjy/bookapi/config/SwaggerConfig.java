@@ -1,4 +1,4 @@
-package com.ivanfranchin.bookapi.config;
+package com.kenjy.bookapi.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;

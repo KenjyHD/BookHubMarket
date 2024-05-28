@@ -1,4 +1,4 @@
-package com.ivanfranchin.bookapi.rest.dto;
+package com.kenjy.bookapi.dto;
 
 public record UserDto(Long id, String username, String name, String email, String role) {
 }

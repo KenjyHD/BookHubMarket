@@ -1,6 +1,6 @@
-package com.ivanfranchin.bookapi.repository;
+package com.kenjy.bookapi.repository;
 
-import com.ivanfranchin.bookapi.model.User;
+import com.kenjy.bookapi.entities.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

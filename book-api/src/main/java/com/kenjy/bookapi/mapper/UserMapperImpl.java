@@ -1,7 +1,7 @@
-package com.ivanfranchin.bookapi.mapper;
+package com.kenjy.bookapi.mapper;
 
-import com.ivanfranchin.bookapi.model.User;
-import com.ivanfranchin.bookapi.rest.dto.UserDto;
+import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.dto.UserDto;
 import org.springframework.stereotype.Service;
 
 @Service

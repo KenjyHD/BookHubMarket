@@ -1,7 +1,7 @@
-package com.ivanfranchin.bookapi.security;
+package com.kenjy.bookapi.security;
 
-import com.ivanfranchin.bookapi.service.UserService;
-import com.ivanfranchin.bookapi.model.User;
+import com.kenjy.bookapi.service.UserService;
+import com.kenjy.bookapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
