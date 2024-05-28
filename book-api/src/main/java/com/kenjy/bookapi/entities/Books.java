@@ -14,7 +14,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "books")
-public class Book {
+public class Books {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -41,7 +41,7 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PurchaseRequest> purchaseRequests = new HashSet<>();
 
-    public Book(String title, String author, Float price, String bookPdfPath) {
+    public Books(String title, String author, Float price, String bookPdfPath) {
         this.title = title;
         this.author = author;
         this.price = price;
