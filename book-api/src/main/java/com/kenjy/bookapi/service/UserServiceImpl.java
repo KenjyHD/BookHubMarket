@@ -1,8 +1,8 @@
-package com.ivanfranchin.bookapi.service;
+package com.kenjy.bookapi.service;
 
-import com.ivanfranchin.bookapi.exception.UserNotFoundException;
-import com.ivanfranchin.bookapi.model.User;
-import com.ivanfranchin.bookapi.repository.UserRepository;
+import com.kenjy.bookapi.exception.UserNotFoundException;
+import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

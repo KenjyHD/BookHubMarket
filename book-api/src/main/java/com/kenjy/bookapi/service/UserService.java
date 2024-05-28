@@ -1,6 +1,6 @@
-package com.ivanfranchin.bookapi.service;
+package com.kenjy.bookapi.service;
 
-import com.ivanfranchin.bookapi.model.User;
+import com.kenjy.bookapi.entities.User;
 
 import java.util.List;
 import java.util.Optional;

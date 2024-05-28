@@ -1,4 +1,4 @@
-package com.ivanfranchin.bookapi.security;
+package com.kenjy.bookapi.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
