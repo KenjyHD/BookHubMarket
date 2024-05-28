@@ -1,9 +1,9 @@
 package com.kenjy.bookapi.mapper;
 
-import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.dto.UserDto;
 
 public interface UserMapper {
 
-    UserDto toUserDto(User user);
+    UserDto toUserDto(Users user);
 }

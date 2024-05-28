@@ -20,11 +20,11 @@ public class PurchaseRequest {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private Books book;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
@@ -35,7 +35,7 @@ public class PurchaseRequest {
 
     private LocalDateTime decisionDate;
 
-    public PurchaseRequest(User user, Book book, PurchaseRequestStatus status, LocalDateTime requestDate) {
+    public PurchaseRequest(Users user, Books book, PurchaseRequestStatus status, LocalDateTime requestDate) {
         this.user = user;
         this.book = book;
         this.status = status;

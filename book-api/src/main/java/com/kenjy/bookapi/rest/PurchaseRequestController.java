@@ -1,9 +1,9 @@
 package com.kenjy.bookapi.rest;
 
 import com.kenjy.bookapi.dto.PurchaseRequestPostDTO;
-import com.kenjy.bookapi.entities.Book;
+import com.kenjy.bookapi.entities.Books;
 import com.kenjy.bookapi.entities.PurchaseRequest;
-import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.entities.UsersBooks;
 import com.kenjy.bookapi.enums.PurchaseRequestStatus;
 import com.kenjy.bookapi.repository.BookRepository;
@@ -34,8 +34,8 @@ public class PurchaseRequestController {
 
     @PostMapping
     public ResponseEntity<?> createPurchaseRequest(@RequestBody PurchaseRequestPostDTO dto) {
-        Optional<User> user = userRepository.findById(dto.getUserId());
-        Optional<Book> book = bookRepository.findById(dto.getBookId());
+        Optional<Users> user = userRepository.findById(dto.getUserId());
+        Optional<Books> book = bookRepository.findById(dto.getBookId());
 
         if (user.isPresent() && book.isPresent()) {
             try {
@@ -51,7 +51,7 @@ public class PurchaseRequestController {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("You have already requested this book for purchase.");
             }
         } else {
-            return ResponseEntity.badRequest().body("User or book not found.");
+            return ResponseEntity.badRequest().body("Users or book not found.");
         }
     }
 

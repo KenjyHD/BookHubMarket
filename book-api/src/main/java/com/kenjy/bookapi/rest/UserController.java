@@ -1,7 +1,7 @@
 package com.kenjy.bookapi.rest;
 
 import com.kenjy.bookapi.mapper.UserMapper;
-import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.dto.UserDto;
 import com.kenjy.bookapi.security.CustomUserDetails;
 import com.kenjy.bookapi.service.UserService;
@@ -50,7 +50,7 @@ public class UserController {
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @DeleteMapping("/{username}")
     public UserDto deleteUser(@PathVariable String username) {
-        User user = userService.validateAndGetUserByUsername(username);
+        Users user = userService.validateAndGetUserByUsername(username);
         userService.deleteUser(user);
         return userMapper.toUserDto(user);
     }

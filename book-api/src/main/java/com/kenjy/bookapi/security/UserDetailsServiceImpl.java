@@ -1,7 +1,7 @@
 package com.kenjy.bookapi.security;
 
+import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.service.UserService;
-import com.kenjy.bookapi.entities.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,12 +20,12 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) {
-        User user = userService.getUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
+        Users user = userService.getUserByUsername(username).orElseThrow(() -> new UsernameNotFoundException(String.format("Username %s not found", username)));
         List<SimpleGrantedAuthority> authorities = Collections.singletonList(new SimpleGrantedAuthority(user.getRole()));
         return mapUserToCustomUserDetails(user, authorities);
     }
 
-    private CustomUserDetails mapUserToCustomUserDetails(User user, List<SimpleGrantedAuthority> authorities) {
+    private CustomUserDetails mapUserToCustomUserDetails(Users user, List<SimpleGrantedAuthority> authorities) {
         CustomUserDetails customUserDetails = new CustomUserDetails();
         customUserDetails.setId(user.getId());
         customUserDetails.setUsername(user.getUsername());
