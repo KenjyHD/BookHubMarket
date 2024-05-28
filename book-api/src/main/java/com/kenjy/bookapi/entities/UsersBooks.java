@@ -16,13 +16,13 @@ public class UsersBooks {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    private Users user;
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Book book;
+    private Books book;
 
-    public UsersBooks(User user, Book book) {
+    public UsersBooks(Users user, Books book) {
         this.user = user;
         this.book = book;
     }

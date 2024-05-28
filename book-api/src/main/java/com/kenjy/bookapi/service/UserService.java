@@ -1,25 +1,25 @@
 package com.kenjy.bookapi.service;
 
-import com.kenjy.bookapi.entities.User;
+import com.kenjy.bookapi.entities.Users;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    List<User> getUsers();
+    List<Users> getUsers();
 
-    Optional<User> getUserByUsername(String username);
+    Optional<Users> getUserByUsername(String username);
 
     boolean hasUserWithUsername(String username);
 
     boolean hasUserWithEmail(String email);
 
-    User validateAndGetUserByUsername(String username);
+    Users validateAndGetUserByUsername(String username);
 
-    User saveUser(User user);
+    Users saveUser(Users user);
 
-    void deleteUser(User user);
+    void deleteUser(Users user);
 
-    Optional<User> validUsernameAndPassword(String username, String password);
+    Optional<Users> validUsernameAndPassword(String username, String password);
 }

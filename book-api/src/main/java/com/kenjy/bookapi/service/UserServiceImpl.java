@@ -1,7 +1,7 @@
 package com.kenjy.bookapi.service;
 
+import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.exception.UserNotFoundException;
-import com.kenjy.bookapi.entities.User;
 import com.kenjy.bookapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,12 +18,12 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public List<User> getUsers() {
+    public List<Users> getUsers() {
         return userRepository.findAll();
     }
 
     @Override
-    public Optional<User> getUserByUsername(String username) {
+    public Optional<Users> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
@@ -38,24 +38,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User validateAndGetUserByUsername(String username) {
+    public Users validateAndGetUserByUsername(String username) {
         return getUserByUsername(username)
-                .orElseThrow(() -> new UserNotFoundException(String.format("User with username %s not found", username)));
+                .orElseThrow(() -> new UserNotFoundException(String.format("Users with username %s not found", username)));
     }
 
     @Override
-    public User saveUser(User user) {
+    public Users saveUser(Users user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
     @Override
-    public void deleteUser(User user) {
+    public void deleteUser(Users user) {
         userRepository.delete(user);
     }
 
     @Override
-    public Optional<User> validUsernameAndPassword(String username, String password) {
+    public Optional<Users> validUsernameAndPassword(String username, String password) {
         return getUserByUsername(username)
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()));
     }
