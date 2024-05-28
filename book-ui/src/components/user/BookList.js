@@ -13,18 +13,20 @@ function BookList({ isBooksLoading, bookTextSearch, books, handleInputChange, ha
             <Item.Content>
               <Item.Header as={Link} to={`/book/${book.id}`}>{book.title}</Item.Header>
               <Item.Meta>{book.id}</Item.Meta>
-              <Item.Description>
-                  <Image src='https://react.semantic-ui.com/images/wireframe/short-paragraph.png' />
-              </Item.Description>
+                <Item.Description>
+                    <p>{book.description}</p>
+                    <p><strong>Genre:</strong> {book.genre || 'Not specified'}</p>
+                    <p><strong>Price:</strong> ${book.price.toFixed(2)}</p>
+                </Item.Description>
             </Item.Content>
         </Item>
     ))
   }
 
-  return (
-      <Segment loading={isBooksLoading} color='blue'>
-        <Grid stackable divided>
-          <Grid.Row columns='2'>
+    return (
+        <Segment loading={isBooksLoading} color='blue'>
+            <Grid stackable divided>
+                <Grid.Row columns='2'>
             <Grid.Column width='3'>
               <Header as='h2'>
                 <Icon name='book' />
