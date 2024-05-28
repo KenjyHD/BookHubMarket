@@ -1,7 +1,7 @@
-package com.ivanfranchin.bookapi.rest;
+package com.kenjy.bookapi.rest;
 
-import com.ivanfranchin.bookapi.service.BookService;
-import com.ivanfranchin.bookapi.service.UserService;
+import com.kenjy.bookapi.service.BookService;
+import com.kenjy.bookapi.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
