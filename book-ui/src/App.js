@@ -1,8 +1,8 @@
 import React from 'react'
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './components/context/AuthContext'
-import PrivateRoute from './components/misc/PrivateRoute'
-import Navbar from './components/misc/Navbar'
+import PrivateRoute from './components/general/PrivateRoute'
+import Navbar from './components/general/Navbar'
 import Home from './components/home/Home'
 import Login from './components/home/Login'
 import Signup from './components/home/Signup'
@@ -12,6 +12,7 @@ import BookDetails from './components/user/BookDetails'
 import AddBookForm from "./components/admin/AddBookForm";
 import MyBooks from "./components/user/MyBooks";
 import AdminPurchaseRequests from "./components/admin/AdminPurchaseRequest";
+import Profile from "./components/general/Profile";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/book/:id" element={<PrivateRoute><BookDetails /></PrivateRoute>} />
           <Route path="/add-book-form" element={<PrivateRoute><AddBookForm /></PrivateRoute>} />
           <Route path="/purchase-requests" element={<PrivateRoute><AdminPurchaseRequests /></PrivateRoute>} />
+          <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
