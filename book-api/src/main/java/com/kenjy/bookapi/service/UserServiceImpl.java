@@ -59,4 +59,21 @@ public class UserServiceImpl implements UserService {
         return getUserByUsername(username)
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()));
     }
+
+    @Override
+    public Users updateUser(Users user) {
+        Optional<Users> existingUserByUsername = userRepository.findByUsername(user.getUsername());
+        Optional<Users> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+
+        if (existingUserByUsername.isPresent() && !existingUserByUsername.get().getId().equals(user.getId())) {
+            throw new RuntimeException("Username already in use");
+        }
+
+        if (existingUserByEmail.isPresent() && !existingUserByEmail.get().getId().equals(user.getId())) {
+            throw new RuntimeException("Email already in use");
+        }
+
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
 }
