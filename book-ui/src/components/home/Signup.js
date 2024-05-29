@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { NavLink, Navigate } from 'react-router-dom'
 import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react'
 import { useAuth } from '../context/AuthContext'
-import { bookApi } from '../misc/BookApi'
-import { handleLogError } from '../misc/Helpers'
+import { bookApi } from '../general/BookApi'
+import { handleLogError } from '../general/Helpers'
 
 function Signup() {
   const Auth = useAuth()
