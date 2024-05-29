@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {Button, Container, Form, Label} from 'semantic-ui-react';
-import {bookApi} from "../misc/BookApi";
-import {handleLogError} from "../misc/Helpers";
+import {bookApi} from "../general/BookApi";
+import {handleLogError} from "../general/Helpers";
 import {useAuth} from "../context/AuthContext";
 
 function AddBookForm() {
