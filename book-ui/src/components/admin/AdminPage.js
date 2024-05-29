@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Navigate } from 'react-router-dom'
 import { Container } from 'semantic-ui-react'
 import { useAuth } from '../context/AuthContext'
-import { bookApi } from '../misc/BookApi'
+import { bookApi } from '../general/BookApi'
 import AdminTab from './AdminTab'
-import { handleLogError } from '../misc/Helpers'
+import { handleLogError } from '../general/Helpers'
 
 function AdminPage() {
   const Auth = useAuth()
