@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {Button, Container, Divider, Header, Image, Loader, Message, Modal, Segment} from 'semantic-ui-react';
-import {bookApi} from "../misc/BookApi";
+import {bookApi} from "../general/BookApi";
 import {useAuth} from "../context/AuthContext";
 
 function BookDetails() {

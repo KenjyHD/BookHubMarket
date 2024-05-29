@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Container, Header, List, Button, Loader, Message } from 'semantic-ui-react';
-import { bookApi } from "../misc/BookApi";
+import { bookApi } from "../general/BookApi";
 import { useAuth } from "../context/AuthContext";
 
 function PersonalLibrary() {

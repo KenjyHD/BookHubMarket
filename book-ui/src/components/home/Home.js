@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Statistic, Icon, Grid, Container, Image, Segment, Dimmer, Loader } from 'semantic-ui-react'
-import { bookApi } from '../misc/BookApi'
-import { handleLogError } from '../misc/Helpers'
+import { bookApi } from '../general/BookApi'
+import { handleLogError } from '../general/Helpers'
 
 function Home() {
   const [numberOfUsers, setNumberOfUsers] = useState(0)
