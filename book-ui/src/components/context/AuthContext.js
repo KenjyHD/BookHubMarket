@@ -33,7 +33,7 @@ function AuthProvider({ children }) {
     getUser,
     userIsAuthenticated,
     userLogin,
-    userLogout,
+    userLogout
   }
 
   return (
@@ -42,9 +42,6 @@ function AuthProvider({ children }) {
     </AuthContext.Provider>
   )
 }
-
-export default AuthContext
-
 export function useAuth() {
   return useContext(AuthContext)
 }
