@@ -4,12 +4,11 @@ import com.kenjy.bookapi.dto.PurchaseRequestPostDTO;
 import com.kenjy.bookapi.entities.Books;
 import com.kenjy.bookapi.entities.PurchaseRequest;
 import com.kenjy.bookapi.entities.Users;
-import com.kenjy.bookapi.entities.UsersBooks;
 import com.kenjy.bookapi.enums.PurchaseRequestStatus;
 import com.kenjy.bookapi.repository.BookRepository;
 import com.kenjy.bookapi.repository.PurchaseRequestRepository;
 import com.kenjy.bookapi.repository.UserRepository;
-import com.kenjy.bookapi.repository.UsersBooksRepository;
+import com.kenjy.bookapi.service.PurchaseRequestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -28,7 +27,7 @@ import java.util.Optional;
 public class PurchaseRequestController {
 
     private final PurchaseRequestRepository purchaseRequestRepository;
-    private final UsersBooksRepository usersBooksRepository;
+    private final PurchaseRequestService purchaseRequestService;
     private final UserRepository userRepository;
     private final BookRepository bookRepository;
 
@@ -56,32 +55,20 @@ public class PurchaseRequestController {
     }
 
     @GetMapping
-    public ResponseEntity<List<PurchaseRequest>> getAllPurchaseRequests() {
-        List<PurchaseRequest> purchaseRequests = purchaseRequestRepository.findAll();
-        return ResponseEntity.ok(purchaseRequests);
+    public ResponseEntity<?> getAllPurchaseRequests() {
+        return ResponseEntity.ok(purchaseRequestService.getAllPurchaseRequests());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<PurchaseRequest> updatePurchaseRequestStatus(
-            @PathVariable Long id,
-            @RequestParam PurchaseRequestStatus status
-    ) {
-        Optional<PurchaseRequest> purchaseRequest = purchaseRequestRepository.findById(id);
-        if (purchaseRequest.isPresent()) {
-            PurchaseRequest pr = purchaseRequest.get();
-            pr.setStatus(status);
-            pr.setDecisionDate(LocalDateTime.now());
-            PurchaseRequest updatedPurchaseRequest = purchaseRequestRepository.save(pr);
+    @PutMapping("/{id}/approve")
+    public ResponseEntity<?> approvePurchaseRequest(@PathVariable Long id) {
+        purchaseRequestService.approvePurchaseRequest(id);
+        return ResponseEntity.ok().build();
+    }
 
-            if (status == PurchaseRequestStatus.APPROVED) {
-                UsersBooks usersBooks = new UsersBooks(pr.getUser(), pr.getBook());
-                usersBooksRepository.save(usersBooks);
-            }
-
-            return ResponseEntity.ok(updatedPurchaseRequest);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+    @PutMapping("/{id}/reject")
+    public ResponseEntity<?> rejectPurchaseRequest(@PathVariable Long id) {
+        purchaseRequestService.rejectPurchaseRequest(id);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/check")
