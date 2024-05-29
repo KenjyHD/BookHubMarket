@@ -13,7 +13,14 @@ export const bookApi = {
   deleteBook,
   addBook,
   createPurchaseRequest,
-  checkPurchaseRequest
+  checkPurchaseRequest,
+  getPurchasedBooks,
+  downloadBook,
+  getPurchaseRequests,
+  approvePurchaseRequest,
+  rejectPurchaseRequest,
+  updateUser,
+  getUserDetails
 }
 
 function authenticate(username, password) {
@@ -98,6 +105,49 @@ function createPurchaseRequest(user, bookId) {
 
 function checkPurchaseRequest(user, bookId) {
   return instance.get(`/api/purchase/check?userId=${user.id}&bookId=${bookId}`, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function getPurchasedBooks(user) {
+  return instance.get(`/api/books/purchased/${user.id}`, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function downloadBook(user, bookId) {
+  return instance.get(`/api/books/${bookId}/download`, {
+    headers: { 'Authorization': basicAuth(user) },
+    responseType: 'blob'
+  });
+}
+
+function getPurchaseRequests(user) {
+  return instance.get(`/api/purchase`, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function approvePurchaseRequest(user, requestId) {
+  return instance.put(`/api/purchase/${requestId}/approve`, {}, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function rejectPurchaseRequest(user, requestId) {
+  return instance.put(`/api/purchase/${requestId}/reject`, {}, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function updateUser(user) {
+  return instance.put('/api/users/update', user, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function getUserDetails(user) {
+  return instance.get(`/api/users/${user.id}`, {
     headers: { 'Authorization': basicAuth(user) }
   });
 }
