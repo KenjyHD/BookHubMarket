@@ -1,5 +1,6 @@
 package com.kenjy.bookapi.service;
 
+import com.kenjy.bookapi.dto.UpdateUserDTO;
 import com.kenjy.bookapi.entities.Users;
 
 import java.util.List;
@@ -14,5 +15,6 @@ public interface UserService {
     Users saveUser(Users user);
     void deleteUser(Users user);
     Optional<Users> validUsernameAndPassword(String username, String password);
-    Users updateUser(Users user);
+    Users updateUser(UpdateUserDTO dto);
+    Users validateAndGetUserById(Long id);
 }
