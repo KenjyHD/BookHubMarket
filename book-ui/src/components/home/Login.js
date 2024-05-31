@@ -35,7 +35,7 @@ function Login() {
       const authdata = window.btoa(username + ':' + password)
       const authenticatedUser = { id, name, role, authdata }
 
-      Auth.userLogin(authenticatedUser)
+      Auth.setUserData(authenticatedUser)
 
       setUsername('')
       setPassword('')

@@ -18,7 +18,7 @@ function AuthProvider({ children }) {
     return localStorage.getItem('user') !== null
   }
 
-  const userLogin = user => {
+  const setUserData = user => {
     localStorage.setItem('user', JSON.stringify(user))
     setUser(user)
   }
@@ -32,8 +32,8 @@ function AuthProvider({ children }) {
     user,
     getUser,
     userIsAuthenticated,
-    userLogin,
-    userLogout
+    setUserData,
+    userLogout,
   }
 
   return (
