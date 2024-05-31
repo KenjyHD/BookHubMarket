@@ -44,7 +44,7 @@ function numberOfBooks() {
 }
 
 function getUsers(user, username) {
-  const url = username ? `/api/users/${username}` : '/api/users'
+  const url = username ? `/api/users/search/${username}` : '/api/users/search'
   return instance.get(url, {
     headers: { 'Authorization': basicAuth(user) }
   })
@@ -147,7 +147,7 @@ function updateUser(user) {
 }
 
 function getUserDetails(user) {
-  return instance.get(`/api/users/${user.id}`, {
+  return instance.get(`/api/users/me`, {
     headers: { 'Authorization': basicAuth(user) }
   });
 }
