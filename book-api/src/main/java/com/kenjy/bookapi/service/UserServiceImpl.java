@@ -1,9 +1,11 @@
 package com.kenjy.bookapi.service;
 
+import com.kenjy.bookapi.dto.UpdateUserDTO;
 import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.exception.UserNotFoundException;
 import com.kenjy.bookapi.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -61,19 +63,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Users updateUser(Users user) {
-        Optional<Users> existingUserByUsername = userRepository.findByUsername(user.getUsername());
-        Optional<Users> existingUserByEmail = userRepository.findByEmail(user.getEmail());
+    public Users updateUser(UpdateUserDTO dto) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        Users currentUser = validateAndGetUserByUsername(currentUsername);
 
-        if (existingUserByUsername.isPresent() && !existingUserByUsername.get().getId().equals(user.getId())) {
+        if (!currentUser.getUsername().equals(dto.getUsername()) && userRepository.existsByUsername(dto.getUsername())) {
             throw new RuntimeException("Username already in use");
         }
 
-        if (existingUserByEmail.isPresent() && !existingUserByEmail.get().getId().equals(user.getId())) {
+        if (!currentUser.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already in use");
         }
 
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        currentUser.setUsername(dto.getUsername());
+        currentUser.setName(dto.getName());
+        currentUser.setEmail(dto.getEmail());
+        if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
+            currentUser.setPassword(passwordEncoder.encode(dto.getPassword()));
+        }
+
+        return userRepository.save(currentUser);
+    }
+
+    @Override
+    public Users validateAndGetUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", id)));
     }
 }
