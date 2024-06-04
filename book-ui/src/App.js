@@ -10,7 +10,6 @@ import AdminPage from './components/admin/AdminPage'
 import Library from './components/user/Library'
 import BookDetails from './components/user/BookDetails'
 import AddBookForm from "./components/admin/AddBookForm";
-import MyBooks from "./components/user/MyBooks";
 import AdminPurchaseRequests from "./components/admin/AdminPurchaseRequest";
 import Profile from "./components/general/Profile";
 
@@ -25,7 +24,7 @@ function App() {
           <Route path='/signup' element={<Signup />} />
           <Route path="/adminpage" element={<PrivateRoute><AdminPage /></PrivateRoute>} />
           <Route path="/library" element={<PrivateRoute><Library /></PrivateRoute>} />
-          <Route path="/personal-library" element={<PrivateRoute><MyBooks /></PrivateRoute>} />
+          <Route path="/personal-library" element={<PrivateRoute><Library /></PrivateRoute>} />
           <Route path="/book/:id" element={<PrivateRoute><BookDetails /></PrivateRoute>} />
           <Route path="/add-book-form" element={<PrivateRoute><AddBookForm /></PrivateRoute>} />
           <Route path="/purchase-requests" element={<PrivateRoute><AdminPurchaseRequests /></PrivateRoute>} />
