@@ -1,5 +1,5 @@
 package com.kenjy.bookapi.enums;
 
-public enum PurchaseRequestStatus {
+public enum RequestStatus {
     PENDING, APPROVED, REJECTED
 }
