@@ -32,7 +32,6 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PurchaseRequest> purchaseRequests = new HashSet<>();
 
-
     public Users(String username, String password, String name, String email, String role) {
         this.username = username;
         this.password = password;

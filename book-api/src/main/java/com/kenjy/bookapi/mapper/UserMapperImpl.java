@@ -22,7 +22,6 @@ public class UserMapperImpl implements UserMapper {
             return null;
         }
         Users user = new Users();
-        user.setUsername(dto.getUsername());
         user.setName(dto.getName());
         user.setEmail(dto.getEmail());
         user.setRole(dto.getPassword());
