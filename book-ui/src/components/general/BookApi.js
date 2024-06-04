@@ -63,6 +63,13 @@ function getBooks(user, text) {
   })
 }
 
+function getPurchasedBooks(user, text) {
+  const url = text ? `/api/books/purchased/${user.id}?text=${text}` : `/api/books/purchased/${user.id}`;
+  return instance.get(url, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
 function getBook(user, id, text) {
   const url = text ? `/api/books?text=${text}` : `/api/books/${id}`
   return instance.get(url, {
@@ -104,13 +111,7 @@ function createPurchaseRequest(user, bookId) {
 }
 
 function checkPurchaseRequest(user, bookId) {
-  return instance.get(`/api/purchase/check?userId=${user.id}&bookId=${bookId}`, {
-    headers: { 'Authorization': basicAuth(user) }
-  });
-}
-
-function getPurchasedBooks(user) {
-  return instance.get(`/api/books/purchased/${user.id}`, {
+  return instance.get(`/api/purchase/checkStatus?userId=${user.id}&bookId=${bookId}`, {
     headers: { 'Authorization': basicAuth(user) }
   });
 }
