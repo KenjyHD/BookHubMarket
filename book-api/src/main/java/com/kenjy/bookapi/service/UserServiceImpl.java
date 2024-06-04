@@ -67,15 +67,10 @@ public class UserServiceImpl implements UserService {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
         Users currentUser = validateAndGetUserByUsername(currentUsername);
 
-        if (!currentUser.getUsername().equals(dto.getUsername()) && userRepository.existsByUsername(dto.getUsername())) {
-            throw new RuntimeException("Username already in use");
-        }
-
         if (!currentUser.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already in use");
         }
 
-        currentUser.setUsername(dto.getUsername());
         currentUser.setName(dto.getName());
         currentUser.setEmail(dto.getEmail());
         if (dto.getPassword() != null && !dto.getPassword().isEmpty()) {
