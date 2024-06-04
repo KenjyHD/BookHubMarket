@@ -1,10 +1,11 @@
 package com.kenjy.bookapi.rest;
 
+import com.kenjy.bookapi.dto.GetPurchaseRequestDTO;
 import com.kenjy.bookapi.dto.PurchaseRequestPostDTO;
-import com.kenjy.bookapi.entities.Books;
+import com.kenjy.bookapi.entities.Book;
 import com.kenjy.bookapi.entities.PurchaseRequest;
 import com.kenjy.bookapi.entities.Users;
-import com.kenjy.bookapi.enums.PurchaseRequestStatus;
+import com.kenjy.bookapi.enums.RequestStatus;
 import com.kenjy.bookapi.repository.BookRepository;
 import com.kenjy.bookapi.repository.PurchaseRequestRepository;
 import com.kenjy.bookapi.repository.UserRepository;
@@ -16,10 +17,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 @RequiredArgsConstructor
 @RestController
@@ -34,18 +32,18 @@ public class PurchaseRequestController {
     @PostMapping
     public ResponseEntity<?> createPurchaseRequest(@RequestBody PurchaseRequestPostDTO dto) {
         Optional<Users> user = userRepository.findById(dto.getUserId());
-        Optional<Books> book = bookRepository.findById(dto.getBookId());
+        Optional<Book> book = bookRepository.findById(dto.getBookId());
 
         if (user.isPresent() && book.isPresent()) {
             try {
                 PurchaseRequest purchaseRequest = new PurchaseRequest(
                         user.get(),
                         book.get(),
-                        PurchaseRequestStatus.PENDING,
+                        RequestStatus.PENDING,
                         LocalDateTime.now()
                 );
-                PurchaseRequest savedPurchaseRequest = purchaseRequestRepository.save(purchaseRequest);
-                return ResponseEntity.ok(savedPurchaseRequest);
+                purchaseRequestRepository.save(purchaseRequest);
+                return ResponseEntity.ok().build();
             } catch (DataIntegrityViolationException e) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("You have already requested this book for purchase.");
             }
@@ -55,8 +53,9 @@ public class PurchaseRequestController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAllPurchaseRequests() {
-        return ResponseEntity.ok(purchaseRequestService.getAllPurchaseRequests());
+    public ResponseEntity<List<GetPurchaseRequestDTO>> getAllPurchaseRequests() {
+        List<GetPurchaseRequestDTO> purchaseRequests = purchaseRequestService.getAllPurchaseRequests();
+        return ResponseEntity.ok(purchaseRequests);
     }
 
     @PutMapping("/{id}/approve")
@@ -71,9 +70,20 @@ public class PurchaseRequestController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/check")
-    public ResponseEntity<Map<String, Boolean>> checkPurchaseRequest(@RequestParam Long userId, @RequestParam Long bookId) {
-        boolean exists = purchaseRequestRepository.existsByUserIdAndBookId(userId, bookId);
-        return ResponseEntity.ok(Collections.singletonMap("exists", exists));
+    @GetMapping("/checkStatus")
+    public ResponseEntity<Map<String, Object>> checkPurchaseRequest(@RequestParam Long userId, @RequestParam Long bookId) {
+        Map<String, Object> response = new HashMap<>();
+        boolean isOwned = purchaseRequestRepository.existsByUserIdAndBookIdAndStatus(userId, bookId, RequestStatus.APPROVED);
+        boolean isRequested = purchaseRequestRepository.existsByUserIdAndBookId(userId, bookId);
+
+        response.put("isOwned", isOwned);
+        response.put("isRequested", isRequested);
+
+        if (isRequested) {
+            RequestStatus status = purchaseRequestRepository.findStatusByUserIdAndBookId(userId, bookId);
+            response.put("requestStatus", status);
+        }
+
+        return ResponseEntity.ok(response);
     }
 }
