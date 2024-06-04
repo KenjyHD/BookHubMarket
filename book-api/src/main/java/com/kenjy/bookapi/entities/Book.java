@@ -14,26 +14,28 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @Table(name = "books")
-public class Books {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
+    @Column(name = "title")
     private String title;
 
     @NotNull
-    private String author;
+    @Column(name = "author")
+    private String authorName;
 
     @NotNull
+    @Column(name = "price")
     private Float price;
 
+    @Column(name = "genre")
     private String genre;
 
+    @Column(name = "description")
     private String description;
-
-    @NotNull
-    private String bookPdfPath;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<UsersBooks> usersBooks = new HashSet<>();
@@ -41,10 +43,15 @@ public class Books {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PurchaseRequest> purchaseRequests = new HashSet<>();
 
-    public Books(String title, String author, Float price, String bookPdfPath) {
-        this.title = title;
-        this.author = author;
-        this.price = price;
-        this.bookPdfPath = bookPdfPath;
-    }
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "author_id")
+    private Author author;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "book_content_id")
+    private BookContent bookContent;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "book_cover_id")
+    private BookCover bookCover;
 }
