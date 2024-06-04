@@ -20,10 +20,5 @@ public class UsersBooks {
 
     @ManyToOne
     @JoinColumn(name = "book_id", nullable = false)
-    private Books book;
-
-    public UsersBooks(Users user, Books book) {
-        this.user = user;
-        this.book = book;
-    }
+    private Book book;
 }
