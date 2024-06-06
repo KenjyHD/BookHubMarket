@@ -8,8 +8,8 @@ import Login from './components/home/Login'
 import Signup from './components/home/Signup'
 import AdminPage from './components/admin/AdminPage'
 import Library from './components/user/Library'
-import BookDetails from './components/user/BookDetails'
-import AddBookForm from "./components/admin/AddBookForm";
+import BookDetails from './components/general/BookDetails'
+import AddBookForm from "./components/general/AddBookForm";
 import AdminPurchaseRequests from "./components/admin/AdminPurchaseRequest";
 import Profile from "./components/general/Profile";
 
