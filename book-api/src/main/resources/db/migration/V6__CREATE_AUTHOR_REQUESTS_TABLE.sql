@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS author_requests (
     id SERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL,
-    book_id BIGINT NOT NULL,
+    book_id BIGINT,
     status VARCHAR(50) NOT NULL,
     request_date TIMESTAMP NOT NULL,
     decision_date TIMESTAMP,
