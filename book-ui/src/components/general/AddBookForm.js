@@ -23,8 +23,8 @@ function AddBookForm() {
 
     const checkPendingRequest = async () => {
         try {
-            const response = await bookApi.checkAuthorRequest(user);
-            setHasPendingRequest(response.data.hasPendingRequest);
+            const response = await bookApi.checkPendingAuthorRequest(user);
+            setHasPendingRequest(response.data);
         } catch (error) {
             handleLogError(error);
         }
