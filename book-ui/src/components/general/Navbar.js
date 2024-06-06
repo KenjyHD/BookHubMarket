@@ -25,12 +25,12 @@ function Navbar() {
 
   const libraryStyle = () => {
     const user = getUser()
-    return user && user.role === 'USER' ? { "display": "block" } : { "display": "none" }
+    return user && ['USER', 'AUTHOR'].includes(user.role) ? { "display": "block" } : { "display": "none" }
   }
 
   const personalLibraryStyle = () => {
     const user = getUser()
-    return user && user.role === 'USER' ? { "display": "block" } : { "display": "none" }
+    return user && ['USER', 'AUTHOR'].includes(user.role) ? { "display": "block" } : { "display": "none" }
   }
 
   const getUserName = () => {
