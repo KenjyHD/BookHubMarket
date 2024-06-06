@@ -5,13 +5,12 @@ import com.kenjy.bookapi.mapper.UserMapper;
 import com.kenjy.bookapi.entities.Users;
 import com.kenjy.bookapi.dto.UserDto;
 import com.kenjy.bookapi.security.CustomUserDetails;
-import com.kenjy.bookapi.service.UserService;
 import com.kenjy.bookapi.config.SwaggerConfig;
+import com.kenjy.bookapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-
     private final UserService userService;
     private final UserMapper userMapper;
 
@@ -33,7 +31,7 @@ public class UserController {
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
-    @GetMapping
+    @GetMapping("/search")
     public List<UserDto> getUsers() {
         return userService.getUsers().stream()
                 .map(userMapper::toUserDto)
