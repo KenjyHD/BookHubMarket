@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, Link, Navigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import { Container, Header, Form, Icon, Image, Input, Item, Segment, Popup, Grid, Loader, Message } from 'semantic-ui-react';
 import { useAuth } from '../context/AuthContext';
 import { bookApi } from '../general/BookApi';
@@ -9,7 +9,6 @@ function Library() {
     const location = useLocation();
     const Auth = useAuth();
     const user = Auth.getUser();
-    const isUser = user.role === 'USER';
 
     const [books, setBooks] = useState([]);
     const [bookTextSearch, setBookTextSearch] = useState('');
@@ -73,10 +72,6 @@ function Library() {
         }
     };
 
-    if (!isUser) {
-        return <Navigate to='/' />;
-    }
-
     if (isBooksLoading) {
         return (
             <Container textAlign='center'>
@@ -104,7 +99,7 @@ function Library() {
             <Item key={book.id}>
                 <Image src={`http://localhost:8080/file-storage/book-covers/${book.coverId}`} size='tiny' bordered rounded />
                 <Item.Content>
-                    <Item.Header as={Link} to={`/books/${book.id}`}>{book.title}</Item.Header>
+                    <Item.Header as={Link} to={`/book/${book.id}`}>{book.title}</Item.Header>
                     <Item.Description>
                         <p>{book.description}</p>
                         <p><strong>Genre:</strong> {book.genre || 'Not specified'}</p>
@@ -114,7 +109,7 @@ function Library() {
                 <Item.Image>
                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between', height: '100%' }}>
                         <Popup content='View Details' trigger={
-                            <Link to={`/books/${book.id}`}>
+                            <Link to={`/book/${book.id}`}>
                                 <Icon name='eye' size='big' style={{ marginTop: '10px' }} />
                             </Link>
                         } />
