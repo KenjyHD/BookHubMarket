@@ -1,15 +1,15 @@
 package com.kenjy.bookapi.repository;
 
-import com.kenjy.bookapi.entities.Books;
+import com.kenjy.bookapi.entities.Book;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface BookRepository extends JpaRepository<Books, Long> {
+public interface BookRepository extends JpaRepository<Book, Long> {
 
-    List<Books> findAllByOrderByTitle();
+    List<Book> findAllByOrderByTitle();
 
-    List<Books> findByTitleContainingIgnoreCaseOrderByTitle(String title);
+    List<Book> findByTitleContainingIgnoreCaseOrderByTitle(String title);
 }
