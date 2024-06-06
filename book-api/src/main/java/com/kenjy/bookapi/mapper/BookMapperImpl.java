@@ -1,37 +1,62 @@
 package com.kenjy.bookapi.mapper;
 
-import com.kenjy.bookapi.entities.Books;
+import com.kenjy.bookapi.entities.Book;
 import com.kenjy.bookapi.dto.GetBookDTO;
 import com.kenjy.bookapi.dto.AddBookDTO;
+import com.kenjy.bookapi.entities.BookContent;
+import com.kenjy.bookapi.entities.BookCover;
+import com.kenjy.bookapi.repository.BookContentRepository;
+import com.kenjy.bookapi.repository.BookCoverRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 @Service
+@RequiredArgsConstructor
 public class BookMapperImpl implements BookMapper {
-    private final String uploadDir = System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\";
-
+    private final BookContentRepository bookContentRepository;
+    private final BookCoverRepository bookCoverRepository;
     @Override
-    public Books toBook(AddBookDTO dto, MultipartFile pfdFile) {
+    public Book toBook(AddBookDTO dto, MultipartFile bookContentFile, MultipartFile bookCoverFile) {
         if (dto == null) {
             return null;
         }
 
-        Books book = new Books();
+        Book book = new Book();
         book.setTitle(dto.getTitle());
-        book.setAuthor(dto.getAuthor());
+        book.setAuthorName(dto.getAuthor());
         book.setPrice(dto.getPrice());
         book.setGenre(dto.getGenre());
         book.setDescription(dto.getDescription());
-        book.setBookPdfPath(uploadDir + pfdFile.getOriginalFilename());
+        book.setAuthor(null);
+
+        BookContent bookContent = new BookContent();
+        bookContent.setFileName(bookContentFile.getOriginalFilename());
+        bookContent.setMimeType(bookContentFile.getContentType());
+        BookContent savedBookContent = bookContentRepository.save(bookContent);
+        book.setBookContent(savedBookContent);
+
+        BookCover bookCover = new BookCover();
+        bookCover.setFileName(bookCoverFile.getOriginalFilename());
+        bookCover.setMimeType(bookCoverFile.getContentType());
+        BookCover savedBookCover = bookCoverRepository.save(bookCover);
+        book.setBookCover(savedBookCover);
 
         return book;
     }
 
     @Override
-    public GetBookDTO toBookDTO(Books book) {
+    public GetBookDTO toBookDTO(Book book) {
         if (book == null) {
             return null;
         }
-        return new GetBookDTO(book.getId(), book.getTitle(), book.getAuthor(), book.getPrice(), book.getGenre(), book.getDescription(), book.getBookPdfPath());
+        return new GetBookDTO(
+                book.getId(),
+                book.getTitle(),
+                book.getAuthorName(),
+                book.getPrice(),
+                book.getGenre(),
+                book.getDescription(),
+                book.getBookCover() != null ? book.getBookCover().getId() : null);
     }
 }
