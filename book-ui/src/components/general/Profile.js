@@ -3,7 +3,7 @@ import {Button, Container, Divider, Form, Header, Modal, Segment} from 'semantic
 import { useAuth } from '../context/AuthContext';
 import { bookApi } from './BookApi';
 import { handleLogError } from './Helpers';
-import './Profile.css';
+import {Link} from "react-router-dom";
 
 function Profile() {
     const Auth = useAuth();
@@ -122,6 +122,11 @@ function Profile() {
                         onChange={handleInputChange}
                     />
                     <Button type='submit' color='blue'>Update</Button>
+                    {user.role === 'USER' && (
+                        <Button as={Link} to="/add-book-form" color='green' style={{ marginTop: '10px' }}>
+                            Request to be an Author
+                        </Button>
+                    )}
                 </Form>
             </Segment>
             <Modal open={modalOpen} onClose={handleModalClose}>
