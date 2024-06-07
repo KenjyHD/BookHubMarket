@@ -1,9 +1,12 @@
 package com.kenjy.bookapi.service;
 
 import com.kenjy.bookapi.dto.UpdateUserDTO;
-import com.kenjy.bookapi.entities.Users;
+import com.kenjy.bookapi.dto.UserDto;
+import com.kenjy.bookapi.entities.User;
 import com.kenjy.bookapi.exception.UserNotFoundException;
+import com.kenjy.bookapi.mapper.UserMapper;
 import com.kenjy.bookapi.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -12,17 +15,19 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
-    public List<Users> getUsers() {
+    public List<User> getUsers() {
         return userRepository.findAll();
     }
 
-    public Optional<Users> getUserByUsername(String username) {
+    public Optional<User> getUserByUsername(String username) {
         return userRepository.findByUsername(username);
     }
 
@@ -34,28 +39,30 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public Users validateAndGetUserByUsername(String username) {
+    public User validateAndGetUserByUsername(String username) {
         return getUserByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(String.format("Users with username %s not found", username)));
     }
 
-    public Users saveUser(Users user) {
+    public User saveUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
-    public void deleteUser(Users user) {
+    public UserDto deleteUser(String username) {
+        User user = validateAndGetUserByUsername(username);
         userRepository.delete(user);
+        return userMapper.toUserDto(user);
     }
 
-    public Optional<Users> validUsernameAndPassword(String username, String password) {
+    public Optional<User> validUsernameAndPassword(String username, String password) {
         return getUserByUsername(username)
                 .filter(user -> passwordEncoder.matches(password, user.getPassword()));
     }
 
-    public Users updateUser(UpdateUserDTO dto) {
+    public User updateUser(UpdateUserDTO dto) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
-        Users currentUser = validateAndGetUserByUsername(currentUsername);
+        User currentUser = validateAndGetUserByUsername(currentUsername);
 
         if (!currentUser.getEmail().equals(dto.getEmail()) && userRepository.existsByEmail(dto.getEmail())) {
             throw new RuntimeException("Email already in use");
@@ -70,13 +77,18 @@ public class UserService {
         return userRepository.save(currentUser);
     }
 
-    public Users validateAndGetUserById(Long id) {
+    public User validateAndGetUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with id %d not found", id)));
     }
 
-    public Users findByUsername(String username) {
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new UserNotFoundException(String.format("User with username {%s} not found", username)));
+    }
+
+    public User findUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(
+                () -> new UserNotFoundException(String.format("User with id {%s} not found", userId)));
     }
 }

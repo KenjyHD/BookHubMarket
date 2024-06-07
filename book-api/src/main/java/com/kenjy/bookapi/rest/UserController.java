@@ -2,7 +2,7 @@ package com.kenjy.bookapi.rest;
 
 import com.kenjy.bookapi.dto.UpdateUserDTO;
 import com.kenjy.bookapi.mapper.UserMapper;
-import com.kenjy.bookapi.entities.Users;
+import com.kenjy.bookapi.entities.User;
 import com.kenjy.bookapi.dto.UserDto;
 import com.kenjy.bookapi.security.CustomUserDetails;
 import com.kenjy.bookapi.config.SwaggerConfig;
@@ -46,23 +46,21 @@ public class UserController {
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @DeleteMapping("/{username}")
-    public UserDto deleteUser(@PathVariable String username) {
-        Users user = userService.validateAndGetUserByUsername(username);
-        userService.deleteUser(user);
-        return userMapper.toUserDto(user);
+    public ResponseEntity<UserDto> deleteUser(@PathVariable String username) {
+        return ResponseEntity.ok(userService.deleteUser(username));
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @PutMapping("/update")
-    public ResponseEntity<Users> updateUser(@RequestBody UpdateUserDTO dto) {
-        Users updatedUser = userService.updateUser(dto);
+    public ResponseEntity<User> updateUser(@RequestBody UpdateUserDTO dto) {
+        User updatedUser = userService.updateUser(dto);
         return ResponseEntity.ok(updatedUser);
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @GetMapping("/{id}")
     public UserDto getUserById(@PathVariable Long id) {
-        Users user = userService.validateAndGetUserById(id);
+        User user = userService.validateAndGetUserById(id);
         return userMapper.toUserDto(user);
     }
 }

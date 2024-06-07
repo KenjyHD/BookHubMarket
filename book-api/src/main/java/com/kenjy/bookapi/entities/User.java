@@ -14,7 +14,7 @@ import java.util.Set;
         @UniqueConstraint(columnNames = "username"),
         @UniqueConstraint(columnNames = "email")
 })
-public class Users {
+public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,7 +32,7 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<PurchaseRequest> purchaseRequests = new HashSet<>();
 
-    public Users(String username, String password, String name, String email, String role) {
+    public User(String username, String password, String name, String email, String role) {
         this.username = username;
         this.password = password;
         this.name = name;
