@@ -1,23 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { Container, Header, Form, Icon, Image, Input, Item, Segment, Popup, Grid, Loader, Message } from 'semantic-ui-react';
+import {
+    Container,
+    Header,
+    Form,
+    Icon,
+    Image,
+    Input,
+    Item,
+    Segment,
+    Popup,
+    Grid,
+    Loader,
+    Message,
+    Button, Dropdown
+} from 'semantic-ui-react';
 import { useAuth } from '../context/AuthContext';
 import { bookApi } from '../general/BookApi';
 import { handleLogError } from '../general/Helpers';
 
 function Library() {
     const location = useLocation();
-    const Auth = useAuth();
-    const user = Auth.getUser();
+    const user = useAuth().getUser();
 
     const [books, setBooks] = useState([]);
     const [bookTextSearch, setBookTextSearch] = useState('');
     const [isBooksLoading, setIsBooksLoading] = useState(false);
     const [error, setError] = useState(null);
+    const [filter, setFilter] = useState('all');
 
     useEffect(() => {
         handleGetBooks();
-    }, [location.pathname]);
+    }, [location.pathname, filter]);
 
     const handleInputChange = (e, { name, value }) => {
         if (name === 'bookTextSearch') {
@@ -28,9 +42,22 @@ function Library() {
     const handleGetBooks = async () => {
         try {
             setIsBooksLoading(true);
-            const response = location.pathname === '/personal-library'
-                ? await bookApi.getPurchasedBooks(user)
-                : await bookApi.getBooks(user);
+            let response;
+
+            if (location.pathname === '/personal-library') {
+                if (filter === 'purchased') {
+                    response = await bookApi.getPurchasedBooks(user);
+                } else if (filter === 'posted' && user.role === 'AUTHOR') {
+                    response = await bookApi.getAuthorBooks(user);
+                } else {
+                    const purchasedBooksResponse = await bookApi.getPurchasedBooks(user);
+                    const authoredBooksResponse = user.role === 'AUTHOR' ? await bookApi.getAuthorBooks(user) : { data: [] };
+                    response = { data: [...purchasedBooksResponse.data, ...authoredBooksResponse.data] };
+                }
+            } else {
+                response = await bookApi.getBooks(user);
+            }
+
             let books = response.data;
             books = books.sort((a, b) => a.title.localeCompare(b.title));
             setBooks(books);
@@ -44,9 +71,22 @@ function Library() {
 
     const handleSearchBook = async () => {
         try {
-            const response = location.pathname === '/personal-library'
-                ? await bookApi.getPurchasedBooks(user, bookTextSearch)
-                : await bookApi.getBooks(user, bookTextSearch);
+            let response;
+
+            if (location.pathname === '/personal-library') {
+                if (filter === 'purchased') {
+                    response = await bookApi.getPurchasedBooks(user, bookTextSearch);
+                } else if (filter === 'posted' && user.role === 'AUTHOR') {
+                    response = await bookApi.getAuthorBooks(user, bookTextSearch);
+                } else {
+                    const purchasedBooksResponse = await bookApi.getPurchasedBooks(user, bookTextSearch);
+                    const authoredBooksResponse = user.role === 'AUTHOR' ? await bookApi.getAuthorBooks(user, bookTextSearch) : { data: [] };
+                    response = { data: [...purchasedBooksResponse.data, ...authoredBooksResponse.data] };
+                }
+            } else {
+                response = await bookApi.getBooks(user, bookTextSearch);
+            }
+
             let books = response.data;
             books = books.sort((a, b) => a.title.localeCompare(b.title));
             setBooks(books);
@@ -124,11 +164,17 @@ function Library() {
         ));
     }
 
+    const filterOptions = [
+        { key: 'all', text: 'All Books', value: 'all' },
+        { key: 'purchased', text: 'Purchased Books', value: 'purchased' },
+        { key: 'posted', text: 'Posted Books', value: 'posted' }
+    ];
+
     return (
         <Container>
             <Segment loading={isBooksLoading} color='blue'>
                 <Grid stackable divided>
-                    <Grid.Row columns='2'>
+                    <Grid.Row columns='4'>
                         <Grid.Column width='3'>
                             <Header as='h2'>
                                 <Icon name='book' />
@@ -146,6 +192,29 @@ function Library() {
                                 />
                             </Form>
                         </Grid.Column>
+                        {user.role === 'AUTHOR' && location.pathname === '/library' && (
+                            <Grid.Column width='3'>
+                                <Button
+                                    as={Link}
+                                    to="/add-book-form"
+                                    color='green'
+                                    icon='add'
+                                    content='Add New Book'
+                                />
+                            </Grid.Column>
+                        )}
+                        {user.role === 'AUTHOR' && (
+                            <Grid.Column width='3'>
+                                <Dropdown
+                                    placeholder='Filter Books'
+                                    fluid
+                                    selection
+                                    options={filterOptions}
+                                    value={filter}
+                                    onChange={(e, { value }) => setFilter(value)}
+                                />
+                            </Grid.Column>
+                        )}
                     </Grid.Row>
                 </Grid>
                 <Item.Group divided unstackable relaxed link>
