@@ -11,5 +11,9 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     List<Book> findAllByOrderByTitle();
 
-    List<Book> findByTitleContainingIgnoreCaseOrderByTitle(String title);
+    List<Book> findAllByTitleContainingIgnoreCaseOrderByTitle(String text);
+
+    List<Book> findAllByAuthorIdAndTitleContainingIgnoreCaseOrderByTitle(Long authorId, String text);
+
+    List<Book> findAllByAuthorId(Long authorId);
 }
