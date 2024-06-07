@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Container, Divider, Form, Header, Modal, Segment} from 'semantic-ui-react';
-import { useAuth } from '../context/AuthContext';
-import { bookApi } from './BookApi';
-import { handleLogError } from './Helpers';
+import {useAuth} from '../context/AuthContext';
+import {bookApi} from './BookApi';
+import {handleLogError} from './Helpers';
 import {Link} from "react-router-dom";
 
 function Profile() {
@@ -61,12 +61,13 @@ function Profile() {
         try {
             const updatedUser = { ...user, name, email, password };
             const response = await bookApi.updateUser(updatedUser);
-            setSuccess('Profile updated successfully');
+
+            let authenticatedUser = { id: user.id, name: response.data.name, role: user.role, authdata: user.authdata };
             if (password) {
-                const authdata = window.btoa(username + ':' + password);
-                const authenticatedUser = { id: user.id, name: response.data.name, role: user.role, authdata };
-                Auth.setUserData(authenticatedUser);
+                authenticatedUser.authdata = window.btoa(username + ':' + password)
             }
+            Auth.setUserData(authenticatedUser);
+            setSuccess('Profile updated successfully');
             setModalOpen(true);
         } catch (error) {
             handleLogError(error);
