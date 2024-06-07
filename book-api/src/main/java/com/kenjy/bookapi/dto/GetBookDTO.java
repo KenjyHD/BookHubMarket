@@ -16,5 +16,6 @@ public class GetBookDTO {
     private Float price;
     private String genre;
     private String description;
+    private Long authorId;
     private UUID coverId;
 }
