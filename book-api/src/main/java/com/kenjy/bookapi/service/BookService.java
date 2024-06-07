@@ -45,7 +45,7 @@ public class BookService {
     }
 
     public List<Book> getBooksContainingText(String text) {
-        return bookRepository.findByTitleContainingIgnoreCaseOrderByTitle(text);
+        return bookRepository.findAllByTitleContainingIgnoreCaseOrderByTitle(text);
     }
 
     public Book validateAndGetBook(Long id) {
@@ -57,13 +57,9 @@ public class BookService {
         bookRepository.delete(book);
     }
 
-    public void saveBook(Book book) {
-        bookRepository.save(book);
-    }
-
-    public GetBookDTO createBook(Users user, AddBookDTO dto, MultipartFile bookContentFile, MultipartFile bookCoverFile) {
+    public GetBookDTO createBook(User user, AddBookDTO dto, MultipartFile bookContentFile, MultipartFile bookCoverFile) {
         try {
-            Book book = bookMapper.toBook(dto, bookContentFile, bookCoverFile);
+            Book book = bookMapper.toBook(user, dto, bookContentFile, bookCoverFile);
 
             File file = new File(contentFolder + book.getBookContent().getId());
             try (OutputStream os = new FileOutputStream(file)) {
@@ -122,7 +118,7 @@ public class BookService {
 
     public BookContent getBookContentDetails(Long bookId) {
         Book book = bookRepository.findById(bookId)
-                .orElseThrow(() -> new RuntimeException("Book not found"));
+                .orElseThrow(() -> new BookNotFoundException(String.format("Book with id {%s} not found", bookId)));
         return book.getBookContent();
     }
 
@@ -135,5 +131,21 @@ public class BookService {
             books = usersBooks.stream().map(UsersBooks::getBook).collect(Collectors.toList());
         }
         return books.stream().map(bookMapper::toBookDTO).collect(Collectors.toList());
+    }
+
+    public List<GetBookDTO> getAuthorBooks(Long authorId, String text) {
+        List<Book> books;
+        if (text != null && !text.isEmpty()) {
+            books = bookRepository.findAllByAuthorIdAndTitleContainingIgnoreCaseOrderByTitle(authorId, text);
+        } else {
+            books = bookRepository.findAllByAuthorId(authorId);
+        }
+
+        return books.stream().map(bookMapper::toBookDTO).collect(Collectors.toList());
+    }
+
+    public Book findBookById(Long bookId) {
+        return bookRepository.findById(bookId)
+                .orElseThrow(() -> new BookNotFoundException(String.format("Book with id {%s} not found", bookId)));
     }
 }
