@@ -10,7 +10,7 @@ import AdminPage from './components/admin/AdminPage'
 import Library from './components/user/Library'
 import BookDetails from './components/general/BookDetails'
 import AddBookForm from "./components/general/AddBookForm";
-import AdminPurchaseRequests from "./components/admin/AdminPurchaseRequest";
+import AdminPurchaseRequests from "./components/general/PurchaseRequests";
 import Profile from "./components/general/Profile";
 
 function App() {
