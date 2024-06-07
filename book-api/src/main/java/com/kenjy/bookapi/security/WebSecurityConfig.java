@@ -36,10 +36,12 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
                 .authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers(HttpMethod.GET, "/api/books", "/api/books/**").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers(HttpMethod.PUT, "/api/users/update").hasAnyAuthority(ADMIN, USER)
-                        .requestMatchers("/api/books", "/api/books/**").hasAuthority(ADMIN)
+                        .requestMatchers(HttpMethod.GET, "/api/users/me").hasAnyAuthority(ADMIN, AUTHOR, USER)
+                        .requestMatchers(HttpMethod.PUT, "/api/users/update").hasAnyAuthority(ADMIN, AUTHOR, USER)
+                        .requestMatchers(HttpMethod.GET, "/api/purchase/check-status").hasAnyAuthority(ADMIN, AUTHOR, USER)
+                        .requestMatchers(HttpMethod.POST, "/api/purchase").hasAnyAuthority(ADMIN, AUTHOR, USER)
+                        .requestMatchers("/api/purchase", "/api/purchase/**").hasAnyAuthority(ADMIN, AUTHOR)
+                        .requestMatchers("/api/books", "/api/books/**").hasAnyAuthority(ADMIN, AUTHOR, USER)
                         .requestMatchers("/api/users", "/api/users/**").hasAuthority(ADMIN)
                         .requestMatchers("/public/**", "/auth/**").permitAll()
                         .requestMatchers("/", "/error", "/csrf", "/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs", "/v3/api-docs/**").permitAll()
