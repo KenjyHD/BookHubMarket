@@ -1,6 +1,7 @@
 INSERT INTO users (username, password, name, email, role) VALUES
-    ('admin', '$2a$10$FLy6uFUo4h/CgxD6sNL64.alknbAkSd.2W2TiVgUc5/tUa.G8SM02', 'Admin', 'admin@mycompany.com', 'ADMIN'),
-    ('user', '$2a$10$B9E3MFXVR5zqb/i4UTrb7e7Fr2SqPLtDHhCvUgfACtoNJUwUGmcE2', 'Users', 'user@mycompany.com', 'USER');
+    ('admin', '$2a$10$BVMd1l4hIE3v35RzXLZOfOGrlUXcBvQK9kOIfxNjlxwfiYImxBR2G', 'Admin', 'admin@gmail.com', 'ADMIN'),
+    ('author', '$2a$10$BVMd1l4hIE3v35RzXLZOfOGrlUXcBvQK9kOIfxNjlxwfiYImxBR2G', 'Author', 'author@gmail.com', 'AUTHOR'),
+    ('user', '$2a$10$BVMd1l4hIE3v35RzXLZOfOGrlUXcBvQK9kOIfxNjlxwfiYImxBR2G', 'User', 'user@gmail.com', 'USER');
 
 -- Insert test data into book_content
 INSERT INTO book_contents (id, file_name, mime_type) VALUES
@@ -27,20 +28,22 @@ INSERT INTO books (title, author, price, genre, description, author_id, book_con
     (SELECT id FROM book_contents LIMIT 1 OFFSET 1),
     (SELECT id FROM book_covers LIMIT 1 OFFSET 1)),
     ('The Barefoot Serpent', 'author3', 12.3, 'Genre3', 'Description3',
-    (SELECT id FROM users WHERE username = 'admin'),
+    (SELECT id FROM users WHERE username = 'author'),
     (SELECT id FROM book_contents LIMIT 1 OFFSET 2),
     (SELECT id FROM book_covers LIMIT 1 OFFSET 2)),
     ('BB Wolf and the 3 LPs', 'author4', 12.3, 'Genre4', 'Description4',
-    (SELECT id FROM users WHERE username = 'admin'),
+    (SELECT id FROM users WHERE username = 'author'),
     (SELECT id FROM book_contents LIMIT 1 OFFSET 3),
     (SELECT id FROM book_covers LIMIT 1 OFFSET 3));
 
 INSERT INTO users_books (user_id, book_id) VALUES
-    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'The Barefoot Serpent')),
-    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'BB Wolf and the 3 LPs'));
+    ((SELECT id FROM users WHERE username = 'author'), (SELECT id FROM books WHERE title = 'Any Empire')),
+    ((SELECT id FROM users WHERE username = 'author'), (SELECT id FROM books WHERE title = 'August Moon')),
+    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'August Moon')),
+    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'The Barefoot Serpent'));
 
 INSERT INTO purchase_requests (user_id, book_id, status, request_date) VALUES
-    ((SELECT id FROM users WHERE username = 'admin'), (SELECT id FROM books WHERE title = 'Any Empire'), 'APPROVED', CURRENT_TIMESTAMP),
-    ((SELECT id FROM users WHERE username = 'admin'), (SELECT id FROM books WHERE title = 'August Moon'), 'APPROVED', CURRENT_TIMESTAMP),
-    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'The Barefoot Serpent'), 'APPROVED', CURRENT_TIMESTAMP),
-    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'BB Wolf and the 3 LPs'), 'APPROVED', CURRENT_TIMESTAMP);
+    ((SELECT id FROM users WHERE username = 'author'), (SELECT id FROM books WHERE title = 'Any Empire'), 'APPROVED', CURRENT_TIMESTAMP),
+    ((SELECT id FROM users WHERE username = 'author'), (SELECT id FROM books WHERE title = 'August Moon'), 'APPROVED', CURRENT_TIMESTAMP),
+    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'August Moon'), 'APPROVED', CURRENT_TIMESTAMP),
+    ((SELECT id FROM users WHERE username = 'user'), (SELECT id FROM books WHERE title = 'The Barefoot Serpent'), 'APPROVED', CURRENT_TIMESTAMP);
