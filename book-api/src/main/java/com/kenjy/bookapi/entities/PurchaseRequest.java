@@ -20,7 +20,7 @@ public class PurchaseRequest {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "book_id", nullable = false)
@@ -35,7 +35,7 @@ public class PurchaseRequest {
 
     private LocalDateTime decisionDate;
 
-    public PurchaseRequest(Users user, Book book, RequestStatus status, LocalDateTime requestDate) {
+    public PurchaseRequest(User user, Book book, RequestStatus status, LocalDateTime requestDate) {
         this.user = user;
         this.book = book;
         this.status = status;
