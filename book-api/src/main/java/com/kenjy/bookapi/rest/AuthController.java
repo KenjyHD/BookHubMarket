@@ -1,6 +1,6 @@
 package com.kenjy.bookapi.rest;
 
-import com.kenjy.bookapi.entities.Users;
+import com.kenjy.bookapi.entities.User;
 import com.kenjy.bookapi.exception.DuplicatedUserInfoException;
 import com.kenjy.bookapi.dto.AuthResponse;
 import com.kenjy.bookapi.dto.LoginRequest;
@@ -28,9 +28,9 @@ public class AuthController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
-        Optional<Users> userOptional = userService.validUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
+        Optional<User> userOptional = userService.validUsernameAndPassword(loginRequest.getUsername(), loginRequest.getPassword());
         if (userOptional.isPresent()) {
-            Users user = userOptional.get();
+            User user = userOptional.get();
             return ResponseEntity.ok(new AuthResponse(user.getId(), user.getName(), user.getRole()));
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
@@ -46,12 +46,12 @@ public class AuthController {
             throw new DuplicatedUserInfoException(String.format("Email %s is already been used", signUpRequest.getEmail()));
         }
 
-        Users user = userService.saveUser(createUser(signUpRequest));
+        User user = userService.saveUser(createUser(signUpRequest));
         return new AuthResponse(user.getId(), user.getName(), user.getRole());
     }
 
-    private Users createUser(SignUpRequest signUpRequest) {
-        Users user = new Users();
+    private User createUser(SignUpRequest signUpRequest) {
+        User user = new User();
         user.setUsername(signUpRequest.getUsername());
         user.setPassword(signUpRequest.getPassword());
         user.setName(signUpRequest.getName());
