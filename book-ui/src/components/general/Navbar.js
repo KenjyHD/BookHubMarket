@@ -23,6 +23,11 @@ function Navbar() {
     return user && user.role === 'ADMIN' ? { "display": "block" } : { "display": "none" }
   }
 
+  const purchaseRequestsPageStyle = () => {
+    const user = getUser()
+    return user && ['ADMIN', 'AUTHOR'].includes(user.role) ? { "display": "block" } : { "display": "none" }
+  }
+
   const libraryStyle = () => {
     const user = getUser()
     return user && ['USER', 'AUTHOR'].includes(user.role) ? { "display": "block" } : { "display": "none" }
@@ -46,7 +51,7 @@ function Navbar() {
         <Menu.Item as={Link} to="/adminpage" style={adminPageStyle()}>AdminPage</Menu.Item>
         <Menu.Item as={Link} to="/library" style={libraryStyle()}>Library</Menu.Item>
         <Menu.Item as={Link} to="/personal-library" style={personalLibraryStyle()}>My Books</Menu.Item>
-        <Menu.Item as={Link} to="/purchase-requests" style={adminPageStyle()}>Purchase Requests</Menu.Item>
+        <Menu.Item as={Link} to="/purchase-requests" style={purchaseRequestsPageStyle()}>Purchase Requests</Menu.Item>
         <Menu.Menu position='right'>
           <Menu.Item as={Link} to="/login" style={enterMenuStyle()}>Login</Menu.Item>
           <Menu.Item as={Link} to="/signup" style={enterMenuStyle()}>Sign Up</Menu.Item>
