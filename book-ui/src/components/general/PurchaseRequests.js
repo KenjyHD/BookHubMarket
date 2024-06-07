@@ -1,13 +1,14 @@
     import React, { useEffect, useState } from 'react';
     import { Button, Container, Header, List, Segment, Divider } from 'semantic-ui-react';
     import { useAuth } from '../context/AuthContext';
-    import { bookApi } from '../general/BookApi';
-    import { handleLogError } from '../general/Helpers';
+    import { bookApi } from './BookApi';
+    import { handleLogError } from './Helpers';
 
     function AdminPurchaseRequests() {
         const Auth = useAuth();
         const user = Auth.getUser();
         const isAdmin = user.role === 'ADMIN';
+        const isAuthor = user.role === 'AUTHOR';
 
         const [purchaseRequests, setPurchaseRequests] = useState({
             pending: [],
@@ -16,14 +17,20 @@
         });
 
         useEffect(() => {
-            if (isAdmin) {
+            if (isAdmin || isAuthor) {
                 fetchPurchaseRequests();
             }
-        }, [isAdmin]);
+        }, [isAdmin, isAuthor]);
 
         const fetchPurchaseRequests = async () => {
             try {
-                const response = await bookApi.getPurchaseRequests(user);
+                let response;
+                if (isAdmin) {
+                    response = await bookApi.getPurchaseRequests(user);
+                } else if (isAuthor) {
+                    response = await bookApi.getPurchaseRequestsByAuthor(user);
+                }
+
                 const pending = response.data.filter(request => request.status === 'PENDING');
                 const approved = response.data.filter(request => request.status === 'APPROVED');
                 const rejected = response.data.filter(request => request.status === 'REJECTED');
