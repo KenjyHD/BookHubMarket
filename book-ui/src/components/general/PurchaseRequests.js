@@ -28,7 +28,7 @@
                 if (isAdmin) {
                     response = await bookApi.getPurchaseRequests(user);
                 } else if (isAuthor) {
-                    response = await bookApi.getPurchaseRequestsByAuthor(user);
+                    response = await bookApi.getPurchaseRequestsForAuthor(user);
                 }
 
                 const pending = response.data.filter(request => request.status === 'PENDING');
