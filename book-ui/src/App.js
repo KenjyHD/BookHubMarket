@@ -12,6 +12,7 @@ import BookDetails from './components/general/BookDetails'
 import AddBookForm from "./components/general/AddBookForm";
 import AdminPurchaseRequests from "./components/general/PurchaseRequests";
 import Profile from "./components/general/Profile";
+import AuthorRequestsPage from "./components/admin/AuthorRequestsPage";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/add-book-form" element={<PrivateRoute><AddBookForm /></PrivateRoute>} />
           <Route path="/purchase-requests" element={<PrivateRoute><AdminPurchaseRequests /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
+          <Route path="/author-requests" element={<PrivateRoute><AuthorRequestsPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
