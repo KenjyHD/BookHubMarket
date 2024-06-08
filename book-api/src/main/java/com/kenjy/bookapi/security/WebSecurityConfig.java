@@ -41,6 +41,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
                         .requestMatchers(HttpMethod.GET, "/api/purchase/check-status").hasAnyAuthority(ADMIN, AUTHOR, USER)
                         .requestMatchers(HttpMethod.POST, "/api/purchase").hasAnyAuthority(ADMIN, AUTHOR, USER)
                         .requestMatchers("/api/purchase", "/api/purchase/**").hasAnyAuthority(ADMIN, AUTHOR)
+                        .requestMatchers("/api/author", "/api/author/**").hasAnyAuthority(ADMIN, AUTHOR, USER)
                         .requestMatchers("/api/books", "/api/books/**").hasAnyAuthority(ADMIN, AUTHOR, USER)
                         .requestMatchers("/api/users", "/api/users/**").hasAuthority(ADMIN)
                         .requestMatchers("/public/**", "/auth/**").permitAll()
