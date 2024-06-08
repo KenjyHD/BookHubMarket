@@ -22,11 +22,12 @@ export const bookApi = {
   rejectPurchaseRequest,
   updateUser,
   getUserDetails,
+  getAllAuthorRequests,
   getPendingAuthorRequest,
   checkPendingAuthorRequest,
   approveAuthorRequest,
   rejectAuthorRequest,
-  getPurchaseRequestsByAuthor: getPurchaseRequestsForAuthor
+  getPurchaseRequestsForAuthor
 }
 
 function authenticate(username, password) {
@@ -162,6 +163,12 @@ function updateUser(user) {
 
 function getUserDetails(user) {
   return instance.get(`/api/users/me`, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function getAllAuthorRequests(user) {
+  return instance.get(`/api/author/requests`, {
     headers: { 'Authorization': basicAuth(user) }
   });
 }
