@@ -143,6 +143,8 @@ function BookDetails() {
         );
     }
 
+    const isBookAuthor = user.role === 'AUTHOR' && book.authorId === user.id;
+
     return (
         <Container>
             <Segment>
@@ -179,7 +181,7 @@ function BookDetails() {
                     </Segment>
                 )}
 
-                {status.isOwned ? (
+                {status.isOwned || isBookAuthor ? (
                     <Button primary onClick={handleDownload}>Download PDF</Button>
                 ) : (
                     status.isRequested ? (
