@@ -1,10 +1,12 @@
 package com.kenjy.bookapi.service;
 
 import com.kenjy.bookapi.dto.AuthorRequestDTO;
+import com.kenjy.bookapi.dto.GetAuthorRequestDTO;
 import com.kenjy.bookapi.entities.AuthorRequest;
 import com.kenjy.bookapi.entities.Book;
 import com.kenjy.bookapi.entities.User;
 import com.kenjy.bookapi.enums.RequestStatus;
+import com.kenjy.bookapi.mapper.AuthorRequestMapper;
 import com.kenjy.bookapi.repository.AuthorRequestRepository;
 import com.kenjy.bookapi.repository.BookRepository;
 import com.kenjy.bookapi.security.WebSecurityConfig;
@@ -12,14 +14,23 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class AuthorRequestService {
     private final AuthorRequestRepository authorRequestRepository;
+    private final AuthorRequestMapper authorRequestMapper;
     private final BookRepository bookRepository;
     private final UserService userService;
+
+    public List<GetAuthorRequestDTO> getAllAuthorRequests() {
+        List<AuthorRequest> authorRequest = authorRequestRepository.findAll();
+
+        return authorRequest.stream().map(authorRequestMapper::toGetAuthorRequestDTO).collect(Collectors.toList());
+    }
 
     public AuthorRequestDTO getPendingAuthorRequestByBookId(Long bookId) {
         Optional<AuthorRequest> authorRequest = authorRequestRepository.findByBookIdAndStatus(bookId, RequestStatus.PENDING);
