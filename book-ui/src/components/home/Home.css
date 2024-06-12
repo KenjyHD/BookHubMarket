@@ -1,0 +1,29 @@
+body, html, #root {
+    height: 100%;
+    margin: 0;
+}
+
+.home-background {
+    background-image: url('https://images.unsplash.com/photo-1509021436665-8f07dbf5bf1d');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-content {
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 2em;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.loading-segment {
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
