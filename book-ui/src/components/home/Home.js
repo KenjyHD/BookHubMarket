@@ -1,69 +1,71 @@
-import React, { useState, useEffect } from 'react'
-import { Statistic, Icon, Grid, Container, Image, Segment, Dimmer, Loader } from 'semantic-ui-react'
-import { bookApi } from '../general/BookApi'
-import { handleLogError } from '../general/Helpers'
+import React, { useState, useEffect } from 'react';
+import { Container, Segment, Dimmer, Loader, Button, Input, Image } from 'semantic-ui-react';
+import { useNavigate  } from 'react-router-dom';
+import './Home.css';
+
+const quotes = [
+  "A room without books is like a body without a soul. – Marcus Tullius Cicero",
+  "The only thing you absolutely have to know, is the location of the library. – Albert Einstein",
+  "So many books, so little time. – Frank Zappa",
+  "A book is a dream that you hold in your hand. – Neil Gaiman",
+  "Reading is to the mind what exercise is to the body. – Joseph Addison"
+];
 
 function Home() {
-  const [numberOfUsers, setNumberOfUsers] = useState(0)
-  const [numberOfBooks, setNumberOfBooks] = useState(0)
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
+  const [quoteIndex, setQuoteIndex] = useState(0);
+  const [searchTerm, setSearchTerm] = useState('');
+  const navigate = useNavigate ();
 
   useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true)
-      try {
-        const responseUsers = await bookApi.numberOfUsers()
-        setNumberOfUsers(responseUsers.data)
+    const quoteInterval = setInterval(() => {
+      setQuoteIndex((prevIndex) => (prevIndex + 1) % quotes.length);
+    }, 5000);
 
-        const responseBooks = await bookApi.numberOfBooks()
-        setNumberOfBooks(responseBooks.data)
-      } catch (error) {
-        handleLogError(error)
-      } finally {
-        setIsLoading(false)
-      }
-    }
+    return () => clearInterval(quoteInterval);
+  }, []);
 
-    fetchData()
-  }, [])
+  const handleSearch = () => {
+    navigate(`/library?search=${searchTerm}`);
+  };
 
   if (isLoading) {
     return (
-      <Segment basic style={{ marginTop: window.innerHeight / 2 }}>
-        <Dimmer active inverted>
-          <Loader inverted size='huge'>Loading</Loader>
-        </Dimmer>
-      </Segment>
-    )
+        <Segment basic className='loading-segment'>
+            <Dimmer active inverted>
+                <Loader inverted size='huge'>Loading</Loader>
+            </Dimmer>
+        </Segment>
+    );
   }
 
   return (
-    <Container text>
-      <Grid stackable columns={2}>
-        <Grid.Row>
-          <Grid.Column textAlign='center'>
-            <Segment color='blue'>
-              <Statistic>
-                <Statistic.Value><Icon name='user' color='grey' />{numberOfUsers}</Statistic.Value>
-                <Statistic.Label>Users</Statistic.Label>
-              </Statistic>
+      <div className='home-background'>
+          <Container text className='home-content'>
+            <Segment>
+              <p style={{ fontStyle: 'italic', fontSize: '1.2em', textAlign: 'center' }}>
+                {quotes[quoteIndex]}
+              </p>
             </Segment>
-          </Grid.Column>
-          <Grid.Column textAlign='center'>
-            <Segment color='blue'>
-              <Statistic>
-                <Statistic.Value><Icon name='book' color='grey' />{numberOfBooks}</Statistic.Value>
-                <Statistic.Label>Books</Statistic.Label>
-              </Statistic>
-            </Segment>
-          </Grid.Column>
-        </Grid.Row>
-      </Grid>
 
-      <Image src='https://react.semantic-ui.com/images/wireframe/media-paragraph.png' style={{ marginTop: '2em' }} />
-      <Image src='https://react.semantic-ui.com/images/wireframe/paragraph.png' style={{ marginTop: '2em' }} />
-    </Container>
-  )
+            <div style={{ textAlign: 'center', marginTop: '2em' }}>
+              <Button primary onClick={() => navigate('/library')}>Go to Library</Button>
+            </div>
+
+            <div style={{ textAlign: 'center', marginTop: '1em' }}>
+              <Input
+                  action={{
+                    icon: 'search',
+                    onClick: handleSearch
+                  }}
+                  placeholder='Search...'
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+          </Container>
+      </div>
+  );
 }
 
-export default Home
+export default Home;
