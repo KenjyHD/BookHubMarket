@@ -13,6 +13,7 @@ import AddBookForm from "./components/general/AddBookForm";
 import AdminPurchaseRequests from "./components/general/PurchaseRequests";
 import Profile from "./components/general/Profile";
 import AuthorRequestsPage from "./components/admin/AuthorRequestsPage";
+import ReadBook from "./components/general/ReadBook";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/library" element={<PrivateRoute><Library /></PrivateRoute>} />
           <Route path="/personal-library" element={<PrivateRoute><Library /></PrivateRoute>} />
           <Route path="/book/:id" element={<PrivateRoute><BookDetails /></PrivateRoute>} />
+          <Route path="/read-book/:id" element={<PrivateRoute><ReadBook /></PrivateRoute>} />
           <Route path="/add-book-form" element={<PrivateRoute><AddBookForm /></PrivateRoute>} />
           <Route path="/purchase-requests" element={<PrivateRoute><AdminPurchaseRequests /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
