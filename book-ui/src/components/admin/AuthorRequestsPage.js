@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import {Button, Container, Table, Tab, Loader} from 'semantic-ui-react';
+import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { bookApi } from '../general/BookApi.js';
 import { useAuth } from "../context/AuthContext";
@@ -32,7 +33,7 @@ function AdminAuthorRequestsPage() {
                 <Table.Header>
                     <Table.Row>
                         <Table.HeaderCell>Username</Table.HeaderCell>
-                        <Table.HeaderCell>Title</Table.HeaderCell>
+                        {status !== 'REJECTED' && <Table.HeaderCell>Title</Table.HeaderCell>}
                         <Table.HeaderCell>Request Date</Table.HeaderCell>
                         <Table.HeaderCell>Status</Table.HeaderCell>
                         {status === 'PENDING' && <Table.HeaderCell>Actions</Table.HeaderCell>}
@@ -42,8 +43,8 @@ function AdminAuthorRequestsPage() {
                     {filteredRequests.map(request => (
                         <Table.Row key={request.id}>
                             <Table.Cell>{request.username}</Table.Cell>
-                            <Table.Cell>{request.title}</Table.Cell>
-                            <Table.Cell>{request.requestDate}</Table.Cell>
+                            {status !== 'REJECTED' && <Table.Cell>{request.title}</Table.Cell>}
+                            <Table.Cell>{format(new Date(request.requestDate), 'yyyy-MM-dd HH:mm')}</Table.Cell>
                             <Table.Cell>{request.status}</Table.Cell>
                             {status === 'PENDING' && (
                                 <Table.Cell>
