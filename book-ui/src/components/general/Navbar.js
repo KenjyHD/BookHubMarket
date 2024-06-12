@@ -39,24 +39,24 @@ function Navbar() {
   }
 
   return (
-    <Menu inverted color='blue' stackable size='massive' style={{borderRadius: 0}}>
-      <Container>
-        <Menu.Item header>Book-UI</Menu.Item>
-        <Menu.Item as={Link} exact='true' to="/">Home</Menu.Item>
-        <Menu.Item as={Link} to="/adminpage" style={adminNavbarStyle()}>AdminPage</Menu.Item>
-        <Menu.Item as={Link} to="/library" style={authorUserStyle()}>Library</Menu.Item>
-        <Menu.Item as={Link} to="/personal-library" style={authorUserStyle()}>My Books</Menu.Item>
-        <Menu.Item as={Link} to="/purchase-requests" style={adminAuthorNavbarStyle()}>Purchase Requests</Menu.Item>
-        <Menu.Item as={Link} to="/author-requests" style={adminNavbarStyle()}>Author Requests</Menu.Item>
-        <Menu.Menu position='right'>
-          <Menu.Item as={Link} to="/login" style={unauthorizedStyle()}>Login</Menu.Item>
-          <Menu.Item as={Link} to="/signup" style={unauthorizedStyle()}>Sign Up</Menu.Item>
-          <Menu.Item as={Link} to="/profile" style={authorizedStyle()} icon='user' />
-          <Menu.Item header style={authorizedStyle()}>{`Hi ${getUserName()}`}</Menu.Item>
-          <Menu.Item as={Link} to="/" style={authorizedStyle()} onClick={logout}>Logout</Menu.Item>
-        </Menu.Menu>
-      </Container>
-    </Menu>
+      <Menu inverted color='brown' stackable size='massive' style={{borderRadius: 0}}>
+        <Container>
+          <Menu.Item header>Book-UI</Menu.Item>
+          <Menu.Item as={Link} exact='true' to="/">Home</Menu.Item>
+          <Menu.Item as={Link} to="/adminpage" style={adminNavbarStyle()}>AdminPage</Menu.Item>
+          <Menu.Item as={Link} to="/library" style={authorUserStyle()}>Library</Menu.Item>
+          <Menu.Item as={Link} to="/personal-library" style={authorUserStyle()}>My Books</Menu.Item>
+          <Menu.Item as={Link} to="/purchase-requests" style={adminAuthorNavbarStyle()}>Purchase Requests</Menu.Item>
+          <Menu.Item as={Link} to="/author-requests" style={adminNavbarStyle()}>Author Requests</Menu.Item>
+          <Menu.Menu position='right'>
+            <Menu.Item as={Link} to="/login" style={unauthorizedStyle()}>Login</Menu.Item>
+            <Menu.Item as={Link} to="/signup" style={unauthorizedStyle()}>Sign Up</Menu.Item>
+            <Menu.Item as={Link} to="/profile" style={authorizedStyle()} icon='user' />
+            <Menu.Item header style={authorizedStyle()}>{`Hi ${getUserName()}`}</Menu.Item>
+            <Menu.Item as={Link} to="/" style={authorizedStyle()} onClick={logout}>Logout</Menu.Item>
+          </Menu.Menu>
+        </Container>
+      </Menu>
   )
 }
 
