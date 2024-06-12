@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthorRequestMapper {
     public GetAuthorRequestDTO toGetAuthorRequestDTO(AuthorRequest ar) {
-        return new GetAuthorRequestDTO(ar.getId(), ar.getBook().getId(), ar.getUser().getUsername(), ar.getBook().getTitle(), ar.getRequestDate(), ar.getStatus());
+        Long bookId = ar.getBook() != null ? ar.getBook().getId() : null;
+        String bookTitle = ar.getBook() != null ? ar.getBook().getTitle() : null;
+        return new GetAuthorRequestDTO(ar.getId(), bookId, ar.getUser().getUsername(), bookTitle, ar.getRequestDate(), ar.getStatus());
     }
 }
