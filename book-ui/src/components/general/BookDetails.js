@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import {Button, Container, Divider, Grid, Header, Image, Loader, Message, Modal, Segment} from 'semantic-ui-react';
 import {bookApi} from "./BookApi";
 import {useAuth} from "../context/AuthContext";
 
 function BookDetails() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const user = useAuth().getUser()
     const isAdmin = user.role === 'ADMIN';
     const [book, setBook] = useState(null);
@@ -112,6 +113,10 @@ function BookDetails() {
         }
     };
 
+    const handleReadBook = () => {
+        navigate(`/read-book/${id}`);
+    };
+
 
     if (isLoading) {
         return (
@@ -181,8 +186,11 @@ function BookDetails() {
                     </Segment>
                 )}
 
-                {status.isOwned || isBookAuthor ? (
-                    <Button primary onClick={handleDownload}>Download PDF</Button>
+                {status.isOwned || isBookAuthor || isAdmin ? (
+                    <>
+                        <Button primary onClick={handleDownload}>Download PDF</Button>
+                        <Button secondary onClick={handleReadBook} style={{ marginLeft: '10px' }}>Read Book</Button>
+                    </>
                 ) : (
                     status.isRequested ? (
                         <Message positive>
@@ -204,7 +212,7 @@ function BookDetails() {
                         <p>{message}</p>
                     </Modal.Content>
                     <Modal.Actions>
-                        <Button primary onClick={handleModalClose}>Close</Button>
+                        <Button primary onClick={handleModalClose}>Ok</Button>
                     </Modal.Actions>
                 </Modal>
             </Segment>
