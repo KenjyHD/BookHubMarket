@@ -4,8 +4,6 @@ import { config } from '../../Constants'
 export const bookApi = {
   authenticate,
   signup,
-  numberOfUsers,
-  numberOfBooks,
   getUsers,
   deleteUser,
   getBooks,
@@ -40,14 +38,6 @@ function signup(user) {
   return instance.post('/auth/signup', user, {
     headers: { 'Content-type': 'application/json' }
   })
-}
-
-function numberOfUsers() {
-  return instance.get('/public/numberOfUsers')
-}
-
-function numberOfBooks() {
-  return instance.get('/public/numberOfBooks')
 }
 
 function getUsers(user, username) {
