@@ -1,15 +1,55 @@
 version: '3.8'
 
 services:
-
   postgres:
     image: postgres:15.4
     container_name: postgres
-    ports:
-      - "5432:5432"
     environment:
-      - POSTGRES_DB=bookdb
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_USER=postgres
+      POSTGRES_DB: bookdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
     healthcheck:
-      test: "pg_isready -U postgres"
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    networks:
+      - backend-network
+
+  backend:
+    build:
+      context: ./book-api
+      dockerfile: Dockerfile
+    container_name: book-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bookdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+    depends_on:
+      - postgres
+    networks:
+      - backend-network
+      - frontend-backend-network
+
+  frontend:
+    build:
+      context: ./book-ui
+      dockerfile: Dockerfile
+    container_name: book-ui
+    ports:
+      - "3000:3000"
+    environment:
+      - REACT_APP_API_BASE_URL=http://book-api:8080
+    depends_on:
+      - backend
+    networks:
+      - frontend-backend-network
+
+networks:
+  backend-network:
+  frontend-backend-network:
+
+volumes:
+  postgres-data:
