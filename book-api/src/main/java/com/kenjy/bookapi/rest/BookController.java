@@ -94,5 +94,4 @@ public class BookController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + bookContent.getFileName() + "\"")
                 .body(resource);
     }
-
 }
