@@ -84,4 +84,8 @@ public class AuthorRequestService {
         authorRequest.setDecisionDate(LocalDateTime.now());
         authorRequestRepository.save(authorRequest);
     }
+
+    public boolean existsAuthorRequestByBookIdAndStatus(Long bookId, RequestStatus status) {
+        return authorRequestRepository.existsByBookIdAndStatus(bookId, status);
+    }
 }
