@@ -58,6 +58,8 @@ public class BookMapper {
         }
         Long authorId = book.getAuthor() != null ? book.getAuthor().getId() : null;
         UUID bookCoverId = book.getBookCover() != null ? book.getBookCover().getId() : null;
+        String bookContentFileName = book.getBookContent() != null ? book.getBookContent().getFileName() : null;
+        String bookCoverFileName = book.getBookCover() != null ? book.getBookCover().getFileName() : null;
         return new GetBookDTO(
                 book.getId(),
                 book.getTitle(),
@@ -66,6 +68,8 @@ public class BookMapper {
                 book.getGenre(),
                 book.getDescription(),
                 authorId,
-                bookCoverId);
+                bookCoverId,
+                bookContentFileName,
+                bookCoverFileName);
     }
 }
