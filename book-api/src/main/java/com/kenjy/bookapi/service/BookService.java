@@ -6,6 +6,8 @@ import com.kenjy.bookapi.entities.*;
 import com.kenjy.bookapi.enums.RequestStatus;
 import com.kenjy.bookapi.exception.BookNotFoundException;
 import com.kenjy.bookapi.mapper.BookMapper;
+import com.kenjy.bookapi.repository.BookContentRepository;
+import com.kenjy.bookapi.repository.BookCoverRepository;
 import com.kenjy.bookapi.repository.BookRepository;
 import com.kenjy.bookapi.repository.UsersBooksRepository;
 import com.kenjy.bookapi.security.WebSecurityConfig;
@@ -25,6 +27,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -34,11 +37,22 @@ public class BookService {
     private final UsersBooksRepository usersBooksRepository;
     private final AuthorRequestService authorRequestService;
     private final BookMapper bookMapper;
+    private final BookContentRepository bookContentRepository;
+    private final BookCoverRepository bookCoverRepository;
 
     private final String contentFolder = System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\book-contents\\";
     private final String coverFolder = System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\book-covers\\";
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
+
+    public List<GetBookDTO> getAllVerifiedBooks(String text) {
+        List<Book> books = (text == null) ? getBooks() : getBooksContainingText(text);
+        return books.stream()
+                .filter(book -> !authorRequestService
+                        .existsAuthorRequestByBookIdAndStatus(book.getId(), RequestStatus.PENDING))
+                .map(bookMapper::toBookDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<Book> getBooks() {
         return bookRepository.findAllByOrderByTitle();
@@ -92,6 +106,80 @@ public class BookService {
             throw new RuntimeException("Failed to save file");
         }
     }
+
+    public Book updateBook(User user, Long bookId, AddBookDTO dto, MultipartFile bookContentFile, MultipartFile bookCoverFile) throws IOException {
+        Book book = validateAndGetBook(bookId);
+
+        if (!user.getId().equals(book.getAuthor().getId()) && !user.getRole().equals(WebSecurityConfig.ADMIN)) {
+            throw new RuntimeException("You are not authorized to update this book.");
+        }
+
+        book.setTitle(dto.getTitle());
+        book.setAuthorName(dto.getAuthor());
+        book.setGenre(dto.getGenre());
+        book.setDescription(dto.getDescription());
+        book.setPrice(dto.getPrice());
+
+        if (bookContentFile != null) {
+            UUID oldFileId = book.getBookContent().getId();
+            book.setBookContent(saveBookContentFile(bookContentFile));
+            deleteContentFile(oldFileId);
+        }
+
+        if (bookCoverFile != null) {
+            UUID oldFileId = book.getBookCover().getId();
+            book.setBookCover(saveBookCoverFile(bookCoverFile));
+            deleteCoverFile(oldFileId);
+        }
+
+        return bookRepository.save(book);
+    }
+
+    private void deleteContentFile(UUID fileId) {
+        bookContentRepository.deleteById(fileId);
+        deleteFile(contentFolder + fileId);
+    }
+
+    private void deleteCoverFile(UUID fileId) {
+        bookCoverRepository.deleteById(fileId);
+        deleteFile(coverFolder + fileId);
+    }
+
+    private void deleteFile(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
+    private BookContent saveBookContentFile(MultipartFile file) throws IOException {
+        BookContent bookContent = new BookContent();
+        bookContent.setMimeType(file.getContentType());
+        bookContent.setFileName(file.getOriginalFilename());
+        BookContent savedBookContent = bookContentRepository.save(bookContent);
+
+        File saveFile = new File(contentFolder + savedBookContent.getId());
+        try (OutputStream os = new FileOutputStream(saveFile)) {
+            os.write(file.getBytes());
+        }
+
+        return bookContent;
+    }
+
+    private BookCover saveBookCoverFile(MultipartFile file) throws IOException {
+        BookCover bookCover = new BookCover();
+        bookCover.setMimeType(file.getContentType());
+        bookCover.setFileName(file.getOriginalFilename());
+        BookCover savedBookCover = bookCoverRepository.save(bookCover);
+
+        File saveFile = new File(coverFolder + savedBookCover.getId());
+        try (OutputStream os = new FileOutputStream(saveFile)) {
+            os.write(file.getBytes());
+        }
+
+        return bookCover;
+    }
+
 
     public Resource getBookContent(Long bookId) {
         try {
