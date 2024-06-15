@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import {Button, Container, Form, Label, Message} from 'semantic-ui-react';
+import {Button, Container, Form, Label, Message, Modal} from 'semantic-ui-react';
 import {bookApi} from "./BookApi";
 import {handleLogError} from "./Helpers";
 import {useAuth} from "../context/AuthContext";
+import {useNavigate} from "react-router-dom";
 
 function AddBookForm() {
     const [title, setTitle] = useState('');
@@ -14,8 +15,11 @@ function AddBookForm() {
     const [bookCover, setBookCover] = useState(null);
     const [errors, setErrors] = useState({});
     const [hasPendingRequest, setHasPendingRequest] = useState(false);
+    const [successModalOpen, setSuccessModalOpen] = useState(false);
+    const [bookId, setBookId] = useState(null);
 
     const user = useAuth().getUser();
+    const navigate = useNavigate();
 
     useEffect(() => {
         checkPendingRequest();
@@ -78,11 +82,21 @@ function AddBookForm() {
         formData.append('bookCover', bookCover);
 
         try {
-            const response = await bookApi.addBook(user, formData);
-            console.log('Book added successfully:', response.data);
-            clearForm();
+            const response = await bookApi.addBook(user, formData)
+            setBookId(response.data.id);
+            setSuccessModalOpen(true);
         } catch (error) {
             handleLogError(error)
+        }
+    };
+
+    const handleCloseModal = () => {
+        setSuccessModalOpen(false);
+        clearForm();
+        if (user.role === 'USER') {
+            navigate(`/profile`);
+        } else {
+            navigate(`/book/${bookId}`);
         }
     };
 
@@ -168,7 +182,7 @@ function AddBookForm() {
                             <label>Book PDF <span style={{color: 'red'}}>*</span></label>
                             <input
                                 type="file"
-                                accept=".pdf"
+                                accept="application/pdf"
                                 onChange={handleBookContentChange}
                             />
                             {errors.bookContent && (
@@ -181,7 +195,7 @@ function AddBookForm() {
                             <label>Book cover <span style={{color: 'red'}}>*</span></label>
                             <input
                                 type="file"
-                                accept=".pdf"
+                                accept="image/jpeg, image/png"
                                 onChange={handleBookCoverChange}
                             />
                             {errors.bookCover && (
@@ -193,6 +207,19 @@ function AddBookForm() {
                         <Button type="submit">Submit</Button>
                     </Form>
             )}
+            <Modal
+                open={successModalOpen}
+                onClose={handleCloseModal}
+                size='small'
+            >
+                <Modal.Header>Success</Modal.Header>
+                <Modal.Content>
+                    <p>Book added successfully!</p>
+                </Modal.Content>
+                <Modal.Actions>
+                    <Button onClick={handleCloseModal}>OK</Button>
+                </Modal.Actions>
+            </Modal>
         </Container>
     );
 }
