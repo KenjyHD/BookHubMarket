@@ -10,6 +10,7 @@ export const bookApi = {
   getBook,
   deleteBook,
   addBook,
+  updateBook,
   createPurchaseRequest,
   checkPurchaseRequest,
   getPurchasedBooks,
@@ -74,8 +75,8 @@ function getAuthorBooks(user, text) {
   });
 }
 
-function getBook(user, id, text) {
-  const url = text ? `/api/books?text=${text}` : `/api/books/${id}`
+function getBook(user, id) {
+  const url = `/api/books/${id}`;
   return instance.get(url, {
     headers: { 'Authorization': basicAuth(user) }
   })
@@ -89,6 +90,15 @@ function deleteBook(user, id) {
 
 function addBook(user, book) {
   return instance.post('/api/books', book, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      'Authorization': basicAuth(user)
+    }
+  })
+}
+
+function updateBook(user, book, id) {
+  return instance.put(`/api/books/${id}`, book, {
     headers: {
       'Content-Type': 'multipart/form-data',
       'Authorization': basicAuth(user)
