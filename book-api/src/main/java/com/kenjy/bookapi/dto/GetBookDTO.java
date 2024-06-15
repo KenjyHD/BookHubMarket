@@ -18,4 +18,6 @@ public class GetBookDTO {
     private String description;
     private Long authorId;
     private UUID coverId;
+    private String contentFilename;
+    private String coverFilename;
 }
