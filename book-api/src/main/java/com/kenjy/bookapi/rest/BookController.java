@@ -22,8 +22,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -35,11 +35,8 @@ public class BookController {
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @GetMapping
-    public List<GetBookDTO> getBooks(@RequestParam(value = "text", required = false) String text) {
-        List<Book> books = (text == null) ? bookService.getBooks() : bookService.getBooksContainingText(text);
-        return books.stream()
-                .map(bookMapper::toBookDTO)
-                .collect(Collectors.toList());
+    public ResponseEntity<List<GetBookDTO>> getBooks(@RequestParam(value = "text", required = false) String text) {
+        return ResponseEntity.ok(bookService.getAllVerifiedBooks(text));
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
@@ -93,5 +90,17 @@ public class BookController {
                 .contentType(MediaType.parseMediaType(bookContent.getMimeType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + bookContent.getFileName() + "\"")
                 .body(resource);
+    }
+
+    @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
+    @PutMapping("/{id}")
+    public ResponseEntity<GetBookDTO> updateBook(@AuthenticationPrincipal UserDetails userDetails,
+                                                 @PathVariable Long id,
+                                                 @RequestPart("book") AddBookDTO dto,
+                                                 @RequestPart(value = "bookContent", required = false) MultipartFile bookContentFile,
+                                                 @RequestPart(value = "bookCover", required = false) MultipartFile bookCoverFile) throws IOException {
+        User user = userService.findByUsername(userDetails.getUsername());
+        Book updatedBook = bookService.updateBook(user, id, dto, bookContentFile, bookCoverFile);
+        return ResponseEntity.ok(bookMapper.toBookDTO(updatedBook));
     }
 }
