@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Segment, Dimmer, Loader, Button, Input, Image } from 'semantic-ui-react';
+import { Container, Segment, Dimmer, Loader, Button } from 'semantic-ui-react';
 import { useNavigate  } from 'react-router-dom';
 import './Home.css';
 
@@ -14,7 +14,6 @@ const quotes = [
 function Home() {
   const [isLoading, setIsLoading] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
-  const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate ();
 
   useEffect(() => {
@@ -24,10 +23,6 @@ function Home() {
 
     return () => clearInterval(quoteInterval);
   }, []);
-
-  const handleSearch = () => {
-    navigate(`/library?search=${searchTerm}`);
-  };
 
   if (isLoading) {
     return (
@@ -50,18 +45,6 @@ function Home() {
 
             <div style={{ textAlign: 'center', marginTop: '2em' }}>
               <Button primary onClick={() => navigate('/library')}>Go to Library</Button>
-            </div>
-
-            <div style={{ textAlign: 'center', marginTop: '1em' }}>
-              <Input
-                  action={{
-                    icon: 'search',
-                    onClick: handleSearch
-                  }}
-                  placeholder='Search...'
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-              />
             </div>
           </Container>
       </div>
