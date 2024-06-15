@@ -1,6 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {useNavigate, useParams} from 'react-router-dom';
-import {Button, Container, Divider, Grid, Header, Image, Loader, Message, Modal, Segment} from 'semantic-ui-react';
+import {
+    Button,
+    Container,
+    Divider,
+    Grid,
+    Header, Icon,
+    Image,
+    Loader,
+    Message,
+    Modal,
+    Popup,
+    Segment
+} from 'semantic-ui-react';
 import {bookApi} from "./BookApi";
 import {useAuth} from "../context/AuthContext";
 
@@ -49,13 +61,13 @@ function BookDetails() {
         fetchBookDetails();
     }, [id, isAdmin]);
 
-    const handleDownload = async () => {
+    const handleBookContentDownload = async () => {
         try {
             const response = await bookApi.downloadBook(user, id);
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `book_${id}.pdf`);
+            link.setAttribute('download', book.contentFilename);
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
@@ -115,6 +127,10 @@ function BookDetails() {
 
     const handleReadBook = () => {
         navigate(`/read-book/${id}`);
+    }
+
+    const handleEditBook = () => {
+        navigate(`/book-edit/${id}`);
     };
 
 
@@ -177,7 +193,7 @@ function BookDetails() {
 
                 {isAdmin && !!authorRequest && (
                     <Segment textAlign='center'>
-                        <Button color='green' onClick={handleApproveRequest} style={{ marginRight: '10px' }}>
+                        <Button color='green' onClick={handleApproveRequest} style={{marginRight: '10px'}}>
                             Approve Author Request
                         </Button>
                         <Button color='red' onClick={handleRejectRequest}>
@@ -186,38 +202,48 @@ function BookDetails() {
                     </Segment>
                 )}
 
-                {status.isOwned || isBookAuthor || isAdmin ? (
-                    <>
-                        <Button primary onClick={handleDownload}>Download PDF</Button>
-                        <Button secondary onClick={handleReadBook} style={{ marginLeft: '10px' }}>Read Book</Button>
-                    </>
-                ) : (
-                    status.isRequested ? (
-                        <Message positive>
-                            <Message.Header>Purchase Request Exists</Message.Header>
-                            <p>You have already requested this book for purchase. Please wait for decision.</p>
-                        </Message>
+                <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '10px'}}>
+                    {status.isOwned || isBookAuthor || isAdmin ? (
+                        <>
+                            <Button primary onClick={handleBookContentDownload}>Download PDF</Button>
+                            <Button secondary onClick={handleReadBook} style={{marginLeft: '10px'}}>Read Book</Button>
+                        </>
                     ) : (
-                        <Button primary onClick={handlePurchaseRequest}>Request Purchase</Button>
-                    )
-                )}
+                        status.isRequested ? (
+                            <Message positive>
+                                <Message.Header>Purchase Request Exists</Message.Header>
+                                <p>You have already requested this book for purchase. Please wait for decision.</p>
+                            </Message>
+                        ) : (
+                            <Button primary onClick={handlePurchaseRequest}>Request Purchase</Button>
+                        )
+                    )}
+                    {(isAdmin || isBookAuthor) && (
+                        <Popup content='Edit Book' trigger={
+                            <Button icon onClick={handleEditBook}>
+                                <Icon name='edit' />
+                            </Button>
+                        } />
+                    )}
+                </div>
 
-                <Modal
-                    open={modalOpen}
-                    onClose={handleModalClose}
-                    closeOnDimmerClick={!message}
-                >
-                    <Modal.Header>{message.includes('successfully') ? 'Success' : 'Error'}</Modal.Header>
-                    <Modal.Content>
-                        <p>{message}</p>
-                    </Modal.Content>
-                    <Modal.Actions>
-                        <Button primary onClick={handleModalClose}>Ok</Button>
-                    </Modal.Actions>
-                </Modal>
+
+                    <Modal
+                        open={modalOpen}
+                        onClose={handleModalClose}
+                        closeOnDimmerClick={!message}
+                    >
+                        <Modal.Header>{message.includes('successfully') ? 'Success' : 'Error'}</Modal.Header>
+                        <Modal.Content>
+                            <p>{message}</p>
+                        </Modal.Content>
+                        <Modal.Actions>
+                            <Button primary onClick={handleModalClose}>Ok</Button>
+                        </Modal.Actions>
+                    </Modal>
             </Segment>
         </Container>
-    );
+);
 }
 
 export default BookDetails;
