@@ -11,9 +11,9 @@ import com.kenjy.bookapi.repository.BookCoverRepository;
 import com.kenjy.bookapi.repository.BookRepository;
 import com.kenjy.bookapi.repository.UsersBooksRepository;
 import com.kenjy.bookapi.security.WebSecurityConfig;
-import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@RequiredArgsConstructor
 @Service
 public class BookService {
     private final BookRepository bookRepository;
@@ -40,16 +39,30 @@ public class BookService {
     private final BookContentRepository bookContentRepository;
     private final BookCoverRepository bookCoverRepository;
 
-    private final String contentFolder = System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\book-contents\\";
-    private final String coverFolder = System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\book-covers\\";
+    private final String contentFolder;
+    private final String coverFolder;
+
+    public BookService(BookRepository bookRepository, UsersBooksRepository usersBooksRepository, AuthorRequestService authorRequestService, BookMapper bookMapper, BookContentRepository bookContentRepository, BookCoverRepository bookCoverRepository, @Value("${content-folder}") String contentFolderPath,
+                       @Value("${cover-folder}") String coverFolderPath) {
+        this.bookRepository = bookRepository;
+        this.usersBooksRepository = usersBooksRepository;
+        this.authorRequestService = authorRequestService;
+        this.bookMapper = bookMapper;
+        this.bookContentRepository = bookContentRepository;
+        this.bookCoverRepository = bookCoverRepository;
+        this.contentFolder = System.getProperty("user.dir") + contentFolderPath;
+        this.coverFolder = System.getProperty("user.dir") + coverFolderPath;
+    }
 
     private static final Logger logger = LoggerFactory.getLogger(BookService.class);
 
-    public List<GetBookDTO> getAllVerifiedBooks(String text) {
-        List<Book> books = (text == null) ? getBooks() : getBooksContainingText(text);
+    public List<GetBookDTO> getAllVerifiedBooks(String title, String genre, String author, Float minPrice, Float maxPrice) {
+        String titleLowercase = title != null ? title.toLowerCase() : null;
+        String genreLowercase = genre != null ? genre.toLowerCase() : null;
+        String authorLowercase = author != null ? author.toLowerCase() : null;
+        List<Book> books = bookRepository.findBooks(titleLowercase, genreLowercase, authorLowercase, minPrice, maxPrice);
         return books.stream()
-                .filter(book -> !authorRequestService
-                        .existsAuthorRequestByBookIdAndStatus(book.getId(), RequestStatus.PENDING))
+                .filter(book -> !authorRequestService.existsAuthorRequestByBookIdAndStatus(book.getId(), RequestStatus.PENDING))
                 .map(bookMapper::toBookDTO)
                 .collect(Collectors.toList());
     }
@@ -210,25 +223,19 @@ public class BookService {
         return book.getBookContent();
     }
 
-    public List<GetBookDTO> getPurchasedBooks(Long userId, String text) {
-        List<Book> books;
-        if (text != null && !text.isEmpty()) {
-            books = usersBooksRepository.findByUserIdAndBookTitleContainingIgnoreCaseOrderByTitle(userId, text);
-        } else {
-            List<UsersBooks> usersBooks = usersBooksRepository.findByUserId(userId);
-            books = usersBooks.stream().map(UsersBooks::getBook).collect(Collectors.toList());
-        }
+    public List<GetBookDTO> getPurchasedBooks(Long userId, String title, String genre, String author, Float minPrice, Float maxPrice) {
+        String titleLowercase = title != null ? title.toLowerCase() : null;
+        String genreLowercase = genre != null ? genre.toLowerCase() : null;
+        String authorLowercase = author != null ? author.toLowerCase() : null;
+        List<Book> books = usersBooksRepository.findPurchasedBooks(userId, titleLowercase, genreLowercase, authorLowercase, minPrice, maxPrice);
         return books.stream().map(bookMapper::toBookDTO).collect(Collectors.toList());
     }
 
-    public List<GetBookDTO> getAuthorBooks(Long authorId, String text) {
-        List<Book> books;
-        if (text != null && !text.isEmpty()) {
-            books = bookRepository.findAllByAuthorIdAndTitleContainingIgnoreCaseOrderByTitle(authorId, text);
-        } else {
-            books = bookRepository.findAllByAuthorId(authorId);
-        }
-
+    public List<GetBookDTO> getAuthorBooks(Long authorId, String title, String genre, String author, Float minPrice, Float maxPrice) {
+        String titleLowercase = title != null ? title.toLowerCase() : null;
+        String genreLowercase = genre != null ? genre.toLowerCase() : null;
+        String authorLowercase = author != null ? author.toLowerCase() : null;
+        List<Book> books = bookRepository.findAuthorBooks(authorId, titleLowercase, genreLowercase, authorLowercase, minPrice, maxPrice);
         return books.stream().map(bookMapper::toBookDTO).collect(Collectors.toList());
     }
 
