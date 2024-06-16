@@ -35,24 +35,40 @@ public class BookController {
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @GetMapping
-    public ResponseEntity<List<GetBookDTO>> getBooks(@RequestParam(value = "text", required = false) String text) {
-        return ResponseEntity.ok(bookService.getAllVerifiedBooks(text));
+    public ResponseEntity<List<GetBookDTO>> getBooks(
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "genre", required = false) String genre,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "minPrice", required = false) Float minPrice,
+            @RequestParam(value = "maxPrice", required = false) Float maxPrice
+    ) {
+        return ResponseEntity.ok(bookService.getAllVerifiedBooks(title, genre, author, minPrice, maxPrice));
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @GetMapping("/purchased/{userId}")
     public ResponseEntity<List<GetBookDTO>> getPurchasedBooks(
             @PathVariable Long userId,
-            @RequestParam(value = "text", required = false) String text) {
-        return ResponseEntity.ok(bookService.getPurchasedBooks(userId, text));
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "genre", required = false) String genre,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "minPrice", required = false) Float minPrice,
+            @RequestParam(value = "maxPrice", required = false) Float maxPrice
+    ) {
+        return ResponseEntity.ok(bookService.getPurchasedBooks(userId, title, genre, author, minPrice, maxPrice));
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
     @GetMapping("/author/{userId}")
     public ResponseEntity<List<GetBookDTO>> getAuthorBooks(
             @PathVariable Long userId,
-            @RequestParam(value = "text", required = false) String text) {
-        return ResponseEntity.ok(bookService.getAuthorBooks(userId, text));
+            @RequestParam(value = "title", required = false) String title,
+            @RequestParam(value = "genre", required = false) String genre,
+            @RequestParam(value = "author", required = false) String author,
+            @RequestParam(value = "minPrice", required = false) Float minPrice,
+            @RequestParam(value = "maxPrice", required = false) Float maxPrice
+    ) {
+        return ResponseEntity.ok(bookService.getAuthorBooks(userId, title, genre, author, minPrice, maxPrice));
     }
 
     @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
