@@ -44,8 +44,12 @@ public class UserService {
                 .orElseThrow(() -> new UserNotFoundException(String.format("Users with username %s not found", username)));
     }
 
-    public User saveUser(User user) {
+    public User saveUserAndSetPassword(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
+        return userRepository.save(user);
+    }
+
+    public User saveUser(User user) {
         return userRepository.save(user);
     }
 
