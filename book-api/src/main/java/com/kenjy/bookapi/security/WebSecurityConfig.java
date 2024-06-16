@@ -1,6 +1,7 @@
 package com.kenjy.bookapi.security;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -21,6 +22,9 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig implements WebMvcConfigurer {
+    @Value("${cover-folder}")
+    private String coverFolderPath;
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
@@ -29,7 +33,7 @@ public class WebSecurityConfig implements WebMvcConfigurer {
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/file-storage/book-covers/**")
-                .addResourceLocations("file:" + System.getProperty("user.dir") + "\\book-api\\src\\main\\resources\\file-storage\\book-covers\\");
+                .addResourceLocations("file:" + System.getProperty("user.dir") + coverFolderPath);
     }
 
     @Bean
