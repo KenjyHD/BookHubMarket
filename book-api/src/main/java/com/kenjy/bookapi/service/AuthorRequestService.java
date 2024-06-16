@@ -62,9 +62,9 @@ public class AuthorRequestService {
         Book book = authorRequest.getBook();
 
         user.setRole(WebSecurityConfig.AUTHOR);
-        userService.saveUser(user);
+        User savedUser = userService.saveUser(user);
 
-        book.setAuthor(user);
+        book.setAuthor(savedUser);
         bookRepository.save(book);
 
         authorRequest.setStatus(RequestStatus.APPROVED);
