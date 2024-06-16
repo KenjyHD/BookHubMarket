@@ -6,7 +6,6 @@ import {
     Form,
     Icon,
     Image,
-    Input,
     Item,
     Segment,
     Popup,
@@ -24,7 +23,13 @@ function Library() {
     const user = useAuth().getUser();
 
     const [books, setBooks] = useState([]);
-    const [bookTextSearch, setBookTextSearch] = useState('');
+    const [searchParams, setSearchParams] = useState({
+        title: '',
+        genre: '',
+        author: '',
+        minPrice: '',
+        maxPrice: ''
+    });
     const [isBooksLoading, setIsBooksLoading] = useState(false);
     const [error, setError] = useState(null);
     const [filter, setFilter] = useState('all');
@@ -34,9 +39,10 @@ function Library() {
     }, [location.pathname, filter]);
 
     const handleInputChange = (e, { name, value }) => {
-        if (name === 'bookTextSearch') {
-            setBookTextSearch(value);
-        }
+        setSearchParams(prevState => ({
+            ...prevState,
+            [name]: value
+        }));
     };
 
     const handleGetBooks = async () => {
@@ -71,20 +77,21 @@ function Library() {
 
     const handleSearchBook = async () => {
         try {
+            const { title, genre, author, minPrice, maxPrice } = searchParams;
             let response;
 
             if (location.pathname === '/personal-library') {
                 if (filter === 'purchased') {
-                    response = await bookApi.getPurchasedBooks(user, bookTextSearch);
+                    response = await bookApi.getPurchasedBooks(user, title, genre, author, minPrice, maxPrice);
                 } else if (filter === 'posted' && user.role === 'AUTHOR') {
-                    response = await bookApi.getAuthorBooks(user, bookTextSearch);
+                    response = await bookApi.getAuthorBooks(user, title, genre, author, minPrice, maxPrice);
                 } else {
-                    const purchasedBooksResponse = await bookApi.getPurchasedBooks(user, bookTextSearch);
-                    const authoredBooksResponse = user.role === 'AUTHOR' ? await bookApi.getAuthorBooks(user, bookTextSearch) : { data: [] };
+                    const purchasedBooksResponse = await bookApi.getPurchasedBooks(user, title, genre, author, minPrice, maxPrice);
+                    const authoredBooksResponse = user.role === 'AUTHOR' ? await bookApi.getAuthorBooks(user, title, genre, author, minPrice, maxPrice) : { data: [] };
                     response = { data: [...purchasedBooksResponse.data, ...authoredBooksResponse.data] };
                 }
             } else {
-                response = await bookApi.getBooks(user, bookTextSearch);
+                response = await bookApi.getBooks(user, title, genre, author, minPrice, maxPrice);
             }
 
             let books = response.data;
@@ -96,13 +103,13 @@ function Library() {
         }
     };
 
-    const handleDownload = async (bookId) => {
+    const handleBookContentDownload = async (book) => {
         try {
-            const response = await bookApi.downloadBook(user, bookId);
+            const response = await bookApi.downloadBook(user, book.id);
             const url = window.URL.createObjectURL(new Blob([response.data]));
             const link = document.createElement('a');
             link.href = url;
-            link.setAttribute('download', `book_${bookId}.pdf`);
+            link.setAttribute('download', book.contentFilename);
             document.body.appendChild(link);
             link.click();
             link.parentNode.removeChild(link);
@@ -144,6 +151,7 @@ function Library() {
                         <p>{book.description}</p>
                         <p><strong>Genre:</strong> {book.genre || 'Not specified'}</p>
                         <p><strong>Price:</strong> ${book.price.toFixed(2)}</p>
+                        <p><strong>Author:</strong> {book.author}</p>
                     </Item.Description>
                 </Item.Content>
                 <Item.Image>
@@ -153,11 +161,20 @@ function Library() {
                                 <Icon name='eye' size='big' style={{ marginTop: '10px' }} />
                             </Link>
                         } />
-                        {location.pathname === '/personal-library' &&
-                            <Popup content='Download PDF' trigger={
-                                <Icon name='download' size='big' style={{ marginBottom: '10px' }} onClick={() => handleDownload(book.id)} />
-                            } />
-                        }
+                        {location.pathname === '/personal-library' && (
+                            <>
+                                {((user.role === 'ADMIN') || (user.role === 'AUTHOR' && book.authorId === user.id)) && (
+                                    <Popup content='Edit Book' trigger={
+                                        <Link to={`/book-edit/${book.id}`}>
+                                            <Icon name='edit' size='big' style={{ marginBottom: '10px', marginTop: '10px', marginLeft: '5px' }} />
+                                        </Link>
+                                    } />
+                                )}
+                                <Popup content='Download PDF' trigger={
+                                    <Icon name='download' size='big' style={{ marginBottom: '10px' }} onClick={() => handleBookContentDownload(book)} />
+                                } />
+                            </>
+                        )}
                     </div>
                 </Item.Image>
             </Item>
@@ -181,17 +198,6 @@ function Library() {
                                 <Header.Content>{location.pathname === '/personal-library' ? 'My Books' : 'Books'}</Header.Content>
                             </Header>
                         </Grid.Column>
-                        <Grid.Column>
-                            <Form onSubmit={handleSearchBook}>
-                                <Input
-                                    action={{ icon: 'search' }}
-                                    name='bookTextSearch'
-                                    placeholder='Search by Title'
-                                    value={bookTextSearch}
-                                    onChange={handleInputChange}
-                                />
-                            </Form>
-                        </Grid.Column>
                         {user.role === 'AUTHOR' && location.pathname === '/library' && (
                             <Grid.Column width='3'>
                                 <Button
@@ -203,7 +209,7 @@ function Library() {
                                 />
                             </Grid.Column>
                         )}
-                        {user.role === 'AUTHOR' && (
+                        {user.role === 'AUTHOR' && location.pathname === '/personal-library' && (
                             <Grid.Column width='3'>
                                 <Dropdown
                                     placeholder='Filter Books'
@@ -215,6 +221,52 @@ function Library() {
                                 />
                             </Grid.Column>
                         )}
+                    </Grid.Row>
+                    <Grid.Row columns='4'>
+                        <Grid.Column width='13'>
+                            <Form onSubmit={handleSearchBook}>
+                                <Form.Group widths='equal'>
+                                    <Form.Input
+                                        fluid
+                                        name='title'
+                                        placeholder='Search by Title'
+                                        value={searchParams.title}
+                                        onChange={handleInputChange}
+                                    />
+                                    <Form.Input
+                                        fluid
+                                        name='author'
+                                        placeholder='Search by Author'
+                                        value={searchParams.author}
+                                        onChange={handleInputChange}
+                                    />
+                                    <Form.Input
+                                        fluid
+                                        name='genre'
+                                        placeholder='Search by Genre'
+                                        value={searchParams.genre}
+                                        onChange={handleInputChange}
+                                    />
+                                    <Form.Input
+                                        fluid
+                                        name='minPrice'
+                                        placeholder='Min Price'
+                                        type='number'
+                                        value={searchParams.minPrice}
+                                        onChange={handleInputChange}
+                                    />
+                                    <Form.Input
+                                        fluid
+                                        name='maxPrice'
+                                        placeholder='Max Price'
+                                        type='number'
+                                        value={searchParams.maxPrice}
+                                        onChange={handleInputChange}
+                                    />
+                                    <Form.Button icon='search' />
+                                </Form.Group>
+                            </Form>
+                        </Grid.Column>
                     </Grid.Row>
                 </Grid>
                 <Item.Group divided unstackable relaxed link>
