@@ -54,22 +54,40 @@ function deleteUser(user, username) {
   })
 }
 
-function getBooks(user, text) {
-  const url = text ? `/api/books?text=${text}` : '/api/books'
-  return instance.get(url, {
-    headers: { 'Authorization': basicAuth(user) }
-  })
-}
-
-function getPurchasedBooks(user, text) {
-  const url = text ? `/api/books/purchased/${user.id}?text=${text}` : `/api/books/purchased/${user.id}`;
+function getBooks(user, title, genre, author, minPrice, maxPrice) {
+  const params = new URLSearchParams();
+  if (title) params.append('title', title);
+  if (genre) params.append('genre', genre);
+  if (author) params.append('author', author);
+  if (minPrice) params.append('minPrice', minPrice);
+  if (maxPrice) params.append('maxPrice', maxPrice);
+  const url = `/api/books?${params.toString()}`;
   return instance.get(url, {
     headers: { 'Authorization': basicAuth(user) }
   });
 }
 
-function getAuthorBooks(user, text) {
-  const url = text ? `/api/books/author/${user.id}?text=${text}` : `/api/books/author/${user.id}`;
+function getPurchasedBooks(user, title, genre, author, minPrice, maxPrice) {
+  const params = new URLSearchParams();
+  if (title) params.append('title', title);
+  if (genre) params.append('genre', genre);
+  if (author) params.append('author', author);
+  if (minPrice) params.append('minPrice', minPrice);
+  if (maxPrice) params.append('maxPrice', maxPrice);
+  const url = `/api/books/purchased/${user.id}?${params.toString()}`;
+  return instance.get(url, {
+    headers: { 'Authorization': basicAuth(user) }
+  });
+}
+
+function getAuthorBooks(user, title, genre, author, minPrice, maxPrice) {
+  const params = new URLSearchParams();
+  if (title) params.append('title', title);
+  if (genre) params.append('genre', genre);
+  if (author) params.append('author', author);
+  if (minPrice) params.append('minPrice', minPrice);
+  if (maxPrice) params.append('maxPrice', maxPrice);
+  const url = `/api/books/author/${user.id}?${params.toString()}`;
   return instance.get(url, {
     headers: { 'Authorization': basicAuth(user) }
   });
