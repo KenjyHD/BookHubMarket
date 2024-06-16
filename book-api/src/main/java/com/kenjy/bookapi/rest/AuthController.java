@@ -46,7 +46,7 @@ public class AuthController {
             throw new DuplicatedUserInfoException(String.format("Email %s is already been used", signUpRequest.getEmail()));
         }
 
-        User user = userService.saveUser(createUser(signUpRequest));
+        User user = userService.saveUserAndSetPassword(createUser(signUpRequest));
         return new AuthResponse(user.getId(), user.getName(), user.getRole());
     }
 
