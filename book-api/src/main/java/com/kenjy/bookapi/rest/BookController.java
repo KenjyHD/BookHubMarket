@@ -10,7 +10,12 @@ import com.kenjy.bookapi.mapper.BookMapper;
 import com.kenjy.bookapi.service.BookService;
 import com.kenjy.bookapi.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -19,12 +24,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
 
+@Tag(name = "Book Management", description = "Endpoints for managing books")
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/books")
@@ -33,7 +40,15 @@ public class BookController {
     private final UserService userService;
     private final BookMapper bookMapper;
 
-    @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
+    @Operation(
+            security = @SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME),
+            summary = "Get all books",
+            description = "Retrieve books with optional filters",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Successfully retrieved books"),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )
     @GetMapping
     public ResponseEntity<List<GetBookDTO>> getBooks(
             @RequestParam(value = "title", required = false) String title,
@@ -71,13 +86,31 @@ public class BookController {
         return ResponseEntity.ok(bookService.getAuthorBooks(userId, title, genre, author, minPrice, maxPrice));
     }
 
-    @Operation(security = {@SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME)})
-    @ResponseStatus(HttpStatus.CREATED)
+    @Operation(
+            security = @SecurityRequirement(name = SwaggerConfig.BASIC_AUTH_SECURITY_SCHEME),
+            summary = "Create a new book",
+            description = "Creates a new book with content and cover image",
+            tags = { "Book Management" },
+            responses = {
+                    @ApiResponse(responseCode = "201", description = "Book created successfully",
+                            content = @Content(schema = @Schema(implementation = GetBookDTO.class))),
+                    @ApiResponse(responseCode = "400", description = "Invalid input",
+                            content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+                    @ApiResponse(responseCode = "401", description = "Unauthorized")
+            }
+    )    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = {"multipart/form-data"})
     public GetBookDTO createBook(@AuthenticationPrincipal UserDetails userDetails,
-                                 @RequestPart("book") AddBookDTO dto,
-                                 @RequestPart("bookContent") MultipartFile bookContentFile,
-                                 @RequestPart("bookCover") MultipartFile bookCoverFile) {
+                                 @RequestPart("book")
+                                 @Parameter(description = "Book metadata", required = true)
+                                 AddBookDTO dto,
+
+                                 @RequestPart("bookContent")
+                                     @Parameter(description = "PDF file content", content = @Content(mediaType = MediaType.APPLICATION_PDF_VALUE))
+                                     MultipartFile bookContentFile,
+                                 @RequestPart("bookCover")
+                                     @Parameter(description = "Cover image (PNG/JPEG)", content = @Content(mediaType = MediaType.IMAGE_PNG_VALUE))
+                                     MultipartFile bookCoverFile) {
         User user = userService.findByUsername(userDetails.getUsername());
         return bookService.createBook(user, dto, bookContentFile, bookCoverFile);
     }
@@ -97,6 +130,14 @@ public class BookController {
         return ResponseEntity.ok(bookMapper.toBookDTO(book));
     }
 
+    @Operation(
+            summary = "Download book content",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Book file content",
+                            content = @Content(schema = @Schema(type = "string", format = "binary"))),
+                    @ApiResponse(responseCode = "404", description = "Book not found")
+            }
+    )
     @GetMapping("/{bookId}/download")
     public ResponseEntity<Resource> downloadBook(@PathVariable Long bookId) {
         Resource resource = bookService.getBookContent(bookId);
