@@ -4,6 +4,7 @@ import {bookApi} from "./BookApi";
 import {handleLogError} from "./Helpers";
 import {useAuth} from "../context/AuthContext";
 import {useNavigate, useParams} from "react-router-dom";
+import { config } from '../../Constants'
 
 function EditBookForm() {
     const {id} = useParams();
@@ -124,7 +125,7 @@ function EditBookForm() {
 
     const handleBookCoverDownload = async () => {
         try {
-            const response = await fetch(`http://localhost:8080/file-storage/book-covers/${bookCoverId}`);
+            const response = await fetch(`${config.url.API_BASE_URL}/file-storage/book-covers/${bookCoverId}`);
             if (!response.ok) {
                 setErrors('Network response was not ok');
                 return;
