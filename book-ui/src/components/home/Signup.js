@@ -4,6 +4,7 @@ import { Button, Form, Grid, Segment, Message } from 'semantic-ui-react'
 import { useAuth } from '../context/AuthContext'
 import { bookApi } from '../general/BookApi'
 import { handleLogError } from '../general/Helpers'
+import { Buffer } from 'buffer'
 
 function Signup() {
   const Auth = useAuth()
@@ -42,7 +43,7 @@ function Signup() {
     try {
       const response = await bookApi.signup(user)
       const { id, name, role } = response.data
-      const authdata = window.btoa(username + ':' + password)
+      const authdata = Buffer.from(`${username}:${password}`, 'utf-8').toString('base64')
       const authenticatedUser = { id, name, role, authdata }
 
       Auth.setUserData(authenticatedUser)
