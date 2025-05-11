@@ -17,6 +17,7 @@ import {
 import { useAuth } from '../context/AuthContext';
 import { bookApi } from '../general/BookApi';
 import { handleLogError } from '../general/Helpers';
+import { config } from '../../Constants'
 
 function Library() {
     const location = useLocation();
@@ -119,6 +120,16 @@ function Library() {
         }
     };
 
+    const handleClearSearch = () => {
+        setSearchParams({
+            title: '',
+            genre: '',
+            author: '',
+            minPrice: '',
+            maxPrice: ''
+        });
+    };
+
     if (isBooksLoading) {
         return (
             <Container textAlign='center'>
@@ -144,7 +155,7 @@ function Library() {
     } else {
         bookList = books.map(book => (
             <Item key={book.id}>
-                <Image src={`http://localhost:8080/file-storage/book-covers/${book.coverId}`} size='tiny' bordered rounded />
+                <Image src={`${config.url.API_BASE_URL}/file-storage/book-covers/${book.coverId}`} size='tiny' bordered rounded />
                 <Item.Content>
                     <Item.Header as={Link} to={`/book/${book.id}`}>{book.title}</Item.Header>
                     <Item.Description>
@@ -262,6 +273,17 @@ function Library() {
                                         type='number'
                                         value={searchParams.maxPrice}
                                         onChange={handleInputChange}
+                                    />
+                                    <Popup
+                                        content='Clear all search fields'
+                                        trigger={
+                                            <Button
+                                                type='button'
+                                                onClick={handleClearSearch}
+                                                color='grey'
+                                                icon='eraser'
+                                            />
+                                        }
                                     />
                                     <Form.Button icon='search' />
                                 </Form.Group>
