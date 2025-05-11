@@ -27,8 +27,6 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/bookdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: postgres
-    ports:
-      - "8080:8080"
     depends_on:
       - postgres
     networks:
@@ -40,13 +38,24 @@ services:
       context: ./book-ui
       dockerfile: Dockerfile
     container_name: book-ui
-    ports:
-      - "3000:3000"
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=production
     depends_on:
       - backend
     networks:
+      - frontend-backend-network
+
+  nginx:
+    image: nginx
+    restart: always
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+    ports:
+      - "80:80"
+    depends_on:
+      - frontend
+    networks:
+      - backend-network
       - frontend-backend-network
 
 networks:
