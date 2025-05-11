@@ -15,6 +15,7 @@ import Profile from "./components/general/Profile";
 import AuthorRequestsPage from "./components/admin/AuthorRequestsPage";
 import ReadBook from "./components/general/ReadBook";
 import EditBookForm from "./components/general/EditBookForm";
+import ChartsPage from "./components/admin/ChartsPage";
 
 function App() {
   return (
@@ -35,6 +36,7 @@ function App() {
           <Route path="/purchase-requests" element={<PrivateRoute><AdminPurchaseRequests /></PrivateRoute>} />
           <Route path="/profile" element={<PrivateRoute><Profile /></PrivateRoute>} />
           <Route path="/author-requests" element={<PrivateRoute><AuthorRequestsPage /></PrivateRoute>} />
+          <Route path="/chartspage" element={<PrivateRoute><ChartsPage /></PrivateRoute>} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </Router>
